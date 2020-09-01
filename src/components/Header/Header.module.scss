@@ -1,0 +1,31 @@
+@import "../../scss/colors.scss";
+.Header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 22px 13px 22px;
+  background-color: white;
+}
+.Title {
+  font-size: 18px;
+  line-height: 28px;
+  color: $article;
+  font-weight: normal;
+}
+.AuthorizationButtons {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+.Button {
+  text-transform: capitalize !important;
+  font-family: "Inter var", sans-serif !important;
+}
+.Button__Registration {
+  color: $success !important;
+  border-color: $success !important;
+}
+.Button:first-child {
+  margin-right: 19px;
+}

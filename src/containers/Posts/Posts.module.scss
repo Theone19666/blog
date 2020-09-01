@@ -1,0 +1,11 @@
+.Posts {
+  max-width: 941px;
+  margin: 0 auto;
+  padding-top: 26px;
+  margin-bottom: 26px;
+}
+.Post {
+  &:not(:last-child) {
+    margin-bottom: 26px;
+  }
+}
