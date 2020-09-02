@@ -3,9 +3,19 @@
   margin: 0 auto;
   padding-top: 26px;
   margin-bottom: 26px;
+  @media all and (max-width: 1000px) {
+    & {
+      max-width: 90%;
+    }
+  }
+  & .MuiPagination-ul {
+    justify-content: center;
+  }
 }
 .Post {
   &:not(:last-child) {
     margin-bottom: 26px;
   }
+}
+.Pagination {
 }

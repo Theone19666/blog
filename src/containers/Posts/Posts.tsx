@@ -1,6 +1,7 @@
 import React, { useContext, useEffect } from "react";
 
 import { IObject } from "../../interfaces";
+import { Pagination } from "@material-ui/lab";
 import Post from "../../components/Post";
 import PropTypes from "prop-types";
 import ServiceContext from "../../contexts/service-context";
@@ -13,6 +14,7 @@ function Posts(props: IObject) {
   const Service = useContext(ServiceContext);
   const PostClassName = classNames(classes.Post);
   const Posts = classNames(classes.Posts);
+  const PaginationClasses = classNames(classes.Pagination);
 
   useEffect(() => {
     Service.getAllPosts().then((resp: IObject) => {
@@ -38,7 +40,16 @@ function Posts(props: IObject) {
     );
   });
 
-  return <div className={Posts}>{postsHtml}</div>;
+  return (
+    <div className={Posts}>
+      {postsHtml}{" "}
+      <Pagination
+        color="primary"
+        count={4}
+        classes={{ ul: PaginationClasses }}
+      />
+    </div>
+  );
 }
 
 export default Posts;
