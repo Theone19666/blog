@@ -12,7 +12,7 @@ function sendGetRequest(url: string = "") {
 
 export default class Service {
   static getAllPosts = () => {
-    return sendGetRequest("articles");
+    return sendGetRequest("articles?limit=100");
   };
   static getPost = (slug: string) => {
     return sendGetRequest(`articles/${slug}`);

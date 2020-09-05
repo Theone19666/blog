@@ -1,6 +1,7 @@
 import { FavoriteBorderOutlined, Mood } from "@material-ui/icons";
 
 import { IObject } from "../../interfaces";
+import { Link } from "react-router-dom";
 import React from "react";
 import classes from "./Post.module.scss";
 import moment from "moment";
@@ -28,12 +29,13 @@ function Post(props: IObject) {
     title,
     updatedAt,
     classNamesList,
+    slug,
   } = props;
 
-  const Ticket = classNames(classes.Ticket, classNamesList);
-  const TicketTitleWrapper = classNames(classes.TicketTitleWrapper);
+  const Post = classNames(classes.Post, classNamesList);
+  const PostTitleWrapper = classNames(classes.PostTitleWrapper);
   const Title = classNames(classes.Title);
-  const TicketHeaderWrapper = classNames(classes.TicketHeaderWrapper);
+  const PostHeaderWrapper = classNames(classes.PostHeaderWrapper);
   const Like = classNames(classes.Like);
   const UserInfo = classNames(classes.UserInfo);
   const UserInfoWrapper = classNames(classes.UserInfoWrapper);
@@ -43,6 +45,7 @@ function Post(props: IObject) {
   const FavoriteCount = classNames(classes.FavoriteCount);
   const TagsContainer = classNames(classes.TagsContainer);
   const Tag = classNames(classes.Tag);
+  const Description = classNames(classes.Description);
 
   const tagsHtml = tagList.map((item: string, index: number) => {
     return (
@@ -53,10 +56,12 @@ function Post(props: IObject) {
   });
 
   return (
-    <div className={Ticket}>
-      <div className={TicketHeaderWrapper}>
-        <div className={TicketTitleWrapper}>
-          <h4 className={Title}>{title}</h4>
+    <div className={Post}>
+      <div className={PostHeaderWrapper}>
+        <div className={PostTitleWrapper}>
+          <Link to={`/articles/${slug}`}>
+            <h4 className={Title}>{title}</h4>
+          </Link>
           <FavoriteBorderOutlined />
           <div className={FavoriteCount}>{favoritesCount}</div>
         </div>
@@ -79,6 +84,7 @@ function Post(props: IObject) {
         </div>
       </div>
       <div className={TagsContainer}>{tagsHtml}</div>
+      <div className={Description}>{description}</div>
     </div>
   );
 }
