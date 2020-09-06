@@ -1,7 +1,6 @@
 import { IObject } from "../../interfaces";
 
 export default function postsReducer(state: IObject = {}, action: IObject) {
-  console.log("state reducer", state);
   switch (action.type) {
     case "SET_POSTS_LIST":
       return { ...state, posts: action.list };

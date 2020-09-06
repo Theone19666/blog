@@ -1,8 +1,8 @@
-import React from "react";
-import classnames from "classnames";
-
-import classes from "./Header.module.scss";
 import Button from "../Button";
+import { Link } from "react-router-dom";
+import React from "react";
+import classes from "./Header.module.scss";
+import classnames from "classnames";
 
 function Header() {
   const HeaderClass = classnames(classes.Header);
@@ -15,7 +15,9 @@ function Header() {
   );
   return (
     <header className={HeaderClass}>
-      <h3 className={TitleClass}>Realworld Blog</h3>
+      <Link to="/">
+        <h3 className={TitleClass}>Realworld Blog</h3>
+      </Link>
       <div className={AuthorizationButtonsClass}>
         <Button text="Sign In" classNames={ButtonLoginClass} />
         <Button

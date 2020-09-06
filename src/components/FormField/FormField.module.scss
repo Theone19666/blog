@@ -1,0 +1,12 @@
+@import "../../scss/colors.scss";
+
+.FieldTitle {
+  color: $grey9;
+  font-size: 14px;
+  line-height: 22px;
+}
+.Field {
+  border-radius: 4px;
+  border: 1px solid $grey5;
+  padding: 8px 12px;
+}

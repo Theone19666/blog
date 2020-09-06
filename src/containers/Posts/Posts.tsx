@@ -12,9 +12,9 @@ import classes from "./Posts.module.scss";
 const classNames = require("classnames");
 
 function getHtml(isLoading: boolean = true, isError: boolean, postsHtml: any) {
-  if (isLoading) {
+  /* if (isLoading) {
     return <CircularProgress />;
-  }
+  } */
   if (isError) {
     return <Alert color="error">При загрузке данных произошла ошибка</Alert>;
   }
@@ -64,6 +64,7 @@ function Posts(props: IObject) {
 
   useEffect(() => {
     fetchPostsList();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const postsHtml = Array.isArray(posts) ? (
@@ -84,7 +85,7 @@ function Posts(props: IObject) {
           description={item.description}
           title={item.title}
           updatedAt={item.updatedAt}
-          slug={item.title}
+          slug={item.slug}
         />
       );
     })
@@ -105,7 +106,9 @@ function Posts(props: IObject) {
     isError,
     <div className={Posts}>
       {postsHtml}
-      <Pagination color="primary" count={5} onChange={onPaginationChange} />
+      {posts.length && (
+        <Pagination color="primary" count={5} onChange={onPaginationChange} />
+      )}
     </div>
   );
 }

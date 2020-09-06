@@ -55,13 +55,19 @@ function Post(props: IObject) {
     );
   });
 
+  const slugHtml = slug ? (
+    <Link to={`/articles/${slug}`}>
+      <h4 className={Title}>{title}</h4>
+    </Link>
+  ) : (
+    <h4 className={Title}>{title}</h4>
+  );
+
   return (
     <div className={Post}>
       <div className={PostHeaderWrapper}>
         <div className={PostTitleWrapper}>
-          <Link to={`/articles/${slug}`}>
-            <h4 className={Title}>{title}</h4>
-          </Link>
+          {slugHtml}
           <FavoriteBorderOutlined />
           <div className={FavoriteCount}>{favoritesCount}</div>
         </div>

@@ -1,0 +1,11 @@
+@import "../../scss/colors.scss";
+
+.Label {
+  display: flex;
+  flex-direction: row;
+}
+.Text {
+  font-size: 14px !important;
+  line-height: 22px !important;
+  color: $grey8 !important;
+}

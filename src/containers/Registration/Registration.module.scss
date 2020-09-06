@@ -1,0 +1,59 @@
+@import "../../scss/colors.scss";
+
+.Title {
+  font-weight: 500;
+  font-size: 20px;
+  line-height: 28px;
+  text-align: center;
+  color: $grey9;
+  margin-bottom: 21px;
+}
+
+.Delimiter {
+  border-top: 1px solid $grey4;
+  margin-bottom: 8px;
+}
+.AgreementWrapper {
+  display: flex;
+  flex-direction: row;
+}
+.FieldTitle {
+  &:not(:first-of-type) {
+    margin-top: 12px;
+  }
+  margin-bottom: 2px;
+}
+.Field {
+  width: 100%;
+
+  &:last-of-type {
+    margin-bottom: 21px;
+  }
+  &__error {
+    border-color: $error;
+  }
+}
+.Button {
+  margin-top: 21px;
+  width: 100%;
+  text-transform: capitalize !important;
+  font-weight: normal;
+  font-size: 16px;
+  line-height: 24px;
+  margin-bottom: 8px !important;
+  color: white;
+  background-color: $accent;
+  padding: 8px;
+}
+.SignInWrapper {
+  font-size: 12px;
+  line-height: 20px;
+  color: $grey7;
+  text-align: center;
+}
+.Error {
+  font-size: 14px;
+  line-height: 22px;
+  color: $error;
+  margin-top: 2px;
+}
