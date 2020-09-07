@@ -29,3 +29,25 @@
 .Button:first-child {
   margin-right: 19px;
 }
+.Button__Green {
+  color: $success !important;
+  border-color: $success !important;
+  text-transform: none !important;
+}
+.Button__NewArticle {
+  margin-right: 27px !important;
+}
+.Button__Black {
+  color: $postText !important;
+  border-color: $postText !important;
+  text-transform: none !important;
+}
+.Login {
+  color: $article;
+  font-size: 18px;
+  line-height: 28px;
+  margin-right: 13px;
+}
+.LoginImg {
+  margin-right: 27px;
+}

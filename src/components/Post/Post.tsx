@@ -3,19 +3,11 @@ import { FavoriteBorderOutlined, Mood } from "@material-ui/icons";
 import { IObject } from "../../interfaces";
 import { Link } from "react-router-dom";
 import React from "react";
+import { checkIsImage } from "../../utils";
 import classes from "./Post.module.scss";
 import moment from "moment";
 
 const classNames = require("classnames");
-
-function checkIsImage(imageName: string) {
-  return (
-    imageName.includes(".png") ||
-    imageName.includes(".jpg") ||
-    imageName.includes(".jpeg") ||
-    imageName.includes(".gif")
-  );
-}
 
 function Post(props: IObject) {
   const {
@@ -41,7 +33,7 @@ function Post(props: IObject) {
   const UserInfoWrapper = classNames(classes.UserInfoWrapper);
   const Login = classNames(classes.Login);
   const Date = classNames(classes.Date);
-  const LoginImg = classNames(classes.LoginImg);
+  const LoginImg = classNames("LoginImg");
   const FavoriteCount = classNames(classes.FavoriteCount);
   const TagsContainer = classNames(classes.TagsContainer);
   const Tag = classNames(classes.Tag);

@@ -47,7 +47,18 @@ function App(props: IObject) {
             );
           }}
         />
-        <Route path="/sign-in" component={Login} />
+        <Route
+          path="/sign-in"
+          render={(props) => {
+            return (
+              <AppConsumer>
+                {(setIsLoading) => (
+                  <Login {...props} setIsLoading={setIsLoading} />
+                )}
+              </AppConsumer>
+            );
+          }}
+        />
       </AppProvider>
     </div>
   );

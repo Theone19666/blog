@@ -6,6 +6,7 @@ import Button from "../../components/Button";
 import Checkbox from "../../components/Checkbox";
 import FormField from "../../components/FormField";
 import { IObject } from "../../interfaces";
+import { Link } from "react-router-dom";
 import Service from "../../services/service";
 import classes from "./Registration.module.scss";
 import { useForm } from "react-hook-form";
@@ -15,10 +16,10 @@ const classNames = require("classnames");
 
 function Registration(props: IObject) {
   const { register, handleSubmit, errors, getValues, setError } = useForm();
-  const [error, setRegistrationError] = useState(false);
+  const [success, setSuccess] = useState(false);
   const { setIsLoading } = props?.setIsLoading;
   const RegitstrationClassName = classNames("Profile-Contaier");
-  const TitleClassName = classNames(classes.Title);
+  const TitleClassName = classNames("FormTitle");
   const FieldTitleClassName = classNames(classes.FieldTitle);
   const FieldClassName = classNames(classes.Field);
   const usernameFieldClassName = classNames(FieldClassName, {
@@ -62,11 +63,18 @@ function Registration(props: IObject) {
     setIsLoading(true);
     registerUser({ body: { user: userInfo } })
       .then((resp: IObject) => {
-        const { user } = resp;
+        // const { user } = resp;
+        if (resp.errors) {
+          const keyError = Object.keys(resp.errors)[0];
+          setError("registrationError", {
+            message: `${keyError} ${resp.errors[Object.keys(resp.errors)[0]]}`,
+          });
+          throw new Error("Произошла ошибка при регистрации");
+        }
         const body = {
           user: {
-            email: user.email,
-            password: user.password,
+            email: userInfo.email,
+            password: userInfo.password,
           },
         };
         return loginUser({
@@ -74,16 +82,25 @@ function Registration(props: IObject) {
         });
       })
       .then((resp: any) => {
-        localStorage.setItem("user", resp.user);
+        if (resp.errors) {
+          const keyError = Object.keys(resp.errors)[0];
+          setError("registrationError", {
+            message: `${keyError} ${resp.errors[Object.keys(resp.errors)[0]]}`,
+          });
+          throw new Error("Произошла ошибка при авторизации");
+        }
+        localStorage.setItem("user", JSON.stringify(resp.user));
       })
       .then((resp: any) => {
-        history.push({
+        /*history.push({
           pathname: "/",
-        });
+        }); */
+        setIsLoading(false);
+        setSuccess(true);
       })
       .catch((error: any) => {
         setIsLoading(false);
-        setRegistrationError(true);
+        // setRegistrationError(true);
         //throw new Error("Произошла ошибка при регистрации");
       });
   };
@@ -173,13 +190,15 @@ function Registration(props: IObject) {
           Create
         </button>
         <div className={SignInWrapperClassName}>
-          Already have an account? Sign In.
+          Already have an account?{" "}
+          <Link to="/sign-in" className="link">
+            Sign In.
+          </Link>
         </div>
-        {error && (
-          <Alert color="error">
-            Произошла ошибка при региастрации. Пожалуйста, повторите попытку.
-          </Alert>
+        {errors.registrationError && (
+          <Alert color="error">{errors.registrationError.message}</Alert>
         )}
+        {success && <Alert color="success">Регистрация успешно пройдена</Alert>}
       </form>
     </div>
   );

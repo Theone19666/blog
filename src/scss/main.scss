@@ -86,3 +86,20 @@ body {
   top: 0;
   background-color: white;
 }
+
+.link {
+  color: $accent;
+}
+.FormTitle {
+  font-weight: 500;
+  font-size: 20px;
+  line-height: 28px;
+  text-align: center;
+  color: $grey9;
+  margin-bottom: 21px;
+}
+.LoginImg {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+}

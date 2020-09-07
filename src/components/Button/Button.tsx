@@ -10,6 +10,7 @@ function Button(props: IObject) {
     text = "",
     color,
     rootClassName = "",
+    onClick = () => {},
   } = props;
   return (
     <ButtonMaterial
@@ -18,6 +19,7 @@ function Button(props: IObject) {
       size={size}
       color={color}
       classes={{ root: rootClassName }}
+      onClick={onClick}
     >
       {text}
     </ButtonMaterial>
