@@ -1,11 +1,7 @@
-import {
-  logOutUser,
-  loginUser,
-  setUser,
-} from "../store/actions/userActions";
+import { logOutUser, loginUser, setUser } from "../store/actions/userActions";
 
 import { IObject } from "../interfaces";
-import Registration from "../containers/Registration";
+import Login from "../containers/Login";
 import { connect } from "react-redux";
 import { setIsLoading } from "../store/actions/postsActions";
 import { withRouter } from "react-router-dom";
@@ -24,6 +20,4 @@ const mapDispatchToProps = (dispatch: Function) => ({
   setIsLoading: (isLoading: boolean) => dispatch(setIsLoading(isLoading)),
 });
 
-export default withRouter(
-  connect(mapStateToProps, mapDispatchToProps)(Registration)
-);
+export default connect(mapStateToProps, mapDispatchToProps)(Login);

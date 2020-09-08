@@ -81,11 +81,13 @@ function getHtml(userInfo: IObject, logOut: Function) {
   );
 }
 
-function Header() {
-  const currentUser = JSON.parse(localStorage.getItem("user") || "");
+function Header(props: IObject) {
+  const { user, logoutUser } = props;
+  console.log("user", user);
   const logOut = () => {
-    if (currentUser?.email) {
-      localStorage.removeItem("user");
+    if (user?.email) {
+      //  localStorage.removeItem("user");
+      logoutUser();
     }
   };
   return (
@@ -93,9 +95,7 @@ function Header() {
       <Link to="/">
         <h3 className={TitleClass}>Realworld Blog</h3>
       </Link>
-      <div className={AuthorizationButtonsClass}>
-        {getHtml(currentUser, logOut)}
-      </div>
+      <div className={AuthorizationButtonsClass}>{getHtml(user, logOut)}</div>
     </header>
   );
 }

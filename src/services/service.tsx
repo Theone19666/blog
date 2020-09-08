@@ -13,11 +13,10 @@ function sendGetRequest(url: string = "") {
 }
 function sendPostRequest({
   url = "",
-  body = "",
+  body = {},
   method = "POST",
   headers = {},
 }) {
-  console.log(arguments);
   return fetch(`${APIURL}/${url}`, {
     body: JSON.stringify(body),
     headers,
@@ -39,7 +38,7 @@ export default class Service {
   static getPost = (slug: string) => {
     return sendGetRequest(`articles/${slug}`);
   };
-  static registerUser = ({ body = "" }) => {
+  static registerUser = (body = {}) => {
     return sendPostRequest({
       url: "users",
       body,
@@ -48,7 +47,7 @@ export default class Service {
       },
     });
   };
-  static loginUser = ({ body = "" }) => {
+  static loginUser = (body = {}) => {
     return sendPostRequest({
       url: "users/login",
       body,

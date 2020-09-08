@@ -2,18 +2,21 @@ import React, { useState } from "react";
 
 import { Alert } from "@material-ui/lab";
 import FormField from "../../components/FormField";
-import { IObject } from "../../interfaces";
-import { Link } from "react-router-dom";
 import Service from "../../services/service";
 import classes from "../../containers/Registration/Registration.module.scss";
 import { useForm } from "react-hook-form";
-import { useHistory } from "react-router-dom";
 
 const classNames = require("classnames");
 
-function Login(props: IObject) {
-  let history = useHistory();
-  const { register, handleSubmit, errors, getValues, setError } = useForm();
+function EditProfile() {
+  const {
+    register,
+    handleSubmit,
+    errors,
+    getValues,
+    setError,
+    clearErrors,
+  } = useForm();
   const LoginClassName = classNames("Profile-Contaier");
   const TitleClassName = classNames("FormTitle");
   const FieldTitleClassName = classNames(classes.FieldTitle);
@@ -24,49 +27,36 @@ function Login(props: IObject) {
   const passwordFieldClassName = classNames(FieldClassName, {
     [classes.Field__error]: errors.password,
   });
+  const usernameFieldClassName = classNames(FieldClassName, {
+    [classes.Field__error]: errors.username,
+  });
+  const avatarFieldClassName = classNames(FieldClassName, {
+    [classes.Field__error]: errors.avatar,
+  });
   const ErrorClassName = classNames(classes.Error);
   const ButtonClassName = classNames(classes.Button);
   const SignInWrapperClassName = classNames(classes.SignInWrapper);
   const [success, setSuccess] = useState(false);
-  const loginUser = (userInfo: IObject) => {
-    return Service.loginUser(userInfo);
-  };
-  const onSubmit = (data: any) => {
-    const userInfo = { ...data };
-    const { setIsLoading } = props?.setIsLoading;
-
-    setIsLoading(true);
-    loginUser({ body: { user: userInfo } })
-      .then((resp: IObject) => {
-        // const { user } = resp;
-        if (resp.errors) {
-          const keyError = Object.keys(resp.errors)[0];
-          setError("registrationError", {
-            message: `${keyError} ${resp.errors[Object.keys(resp.errors)[0]]}`,
-          });
-          throw new Error("Произошла ошибка при авторизации");
-        }
-        setSuccess(true);
-        setIsLoading(false);
-        localStorage.setItem("user", JSON.stringify(resp.user));
-      })
-      .then((resp: any) => {
-        setTimeout(
-          () =>
-            history.push({
-              pathname: "/",
-            }),
-          3000
-        );
-      })
-      .catch((error: any) => {
-        setIsLoading(false);
-      });
-  };
+  const onSubmit = () => console.log("submit");
   return (
     <div className={LoginClassName}>
       <h4 className={TitleClassName}>Sign In</h4>
       <form onSubmit={handleSubmit(onSubmit)}>
+        <FormField
+          title="Username"
+          name="username"
+          placeholder="Username"
+          titleClassNames={FieldTitleClassName}
+          inputClassNames={usernameFieldClassName}
+          register={register}
+          rules={{ required: true, maxLength: 20, minLength: 3 }}
+          ref={register({ required: true, maxLength: 20, minLength: 3 })}
+        />
+        {errors.username && (
+          <div className={ErrorClassName}>
+            username должен быть от 3 до 20 символов (включительно)
+          </div>
+        )}
         <FormField
           title="Email address"
           name="email"
@@ -83,36 +73,47 @@ function Login(props: IObject) {
           </div>
         )}
         <FormField
-          title="Password"
+          title="New password"
           name="password"
           placeholder="Password"
           type="password"
           titleClassNames={FieldTitleClassName}
           inputClassNames={passwordFieldClassName}
           register={register}
-          ref={register({ required: true, maxLength: 40, minLength: 6 })}
+          ref={register({ maxLength: 40, minLength: 6 })}
         />
         {errors.password && (
           <div className={ErrorClassName}>
             password должен быть от 6 до 40 символов (включительно)
           </div>
         )}
-        <button type="submit" className={ButtonClassName}>
-          Login
-        </button>
-        <div className={SignInWrapperClassName}>
-          Don’t have an account?{" "}
-          <Link to="/sign-up" className="link">
-            Sign Up.
-          </Link>
-        </div>
-        {errors.registrationError && (
-          <Alert color="error">{errors.registrationError.message}</Alert>
+        <FormField
+          title="Avatar image"
+          name="avatar"
+          placeholder="Avatar image"
+          type="text"
+          titleClassNames={FieldTitleClassName}
+          inputClassNames={avatarFieldClassName}
+          register={register}
+          ref={register({ pattern: /^http{s.}:\/\/{1}/gi })}
+        />
+        {errors.avatar && (
+          <div className={ErrorClassName}>
+            avatar image должен быть корректным url
+          </div>
         )}
-        {success && <Alert color="success">Авторизация успешно пройдена</Alert>}
+        <button type="submit" className={ButtonClassName}>
+          Save
+        </button>
+        {errors.editingError && (
+          <Alert color="error">{errors.editingError.message}</Alert>
+        )}
+        {success && (
+          <Alert color="success">Изменение профиля прошло успешно</Alert>
+        )}
       </form>
     </div>
   );
 }
 
-export default Login;
+export default EditProfile;

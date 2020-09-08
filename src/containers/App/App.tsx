@@ -1,14 +1,17 @@
 import { AppConsumer, AppProvider } from "../../contexts/app-context";
+import React, { useEffect } from "react";
 import { Route, Switch, withRouter } from "react-router-dom";
 
 import { CircularProgress } from "@material-ui/core";
+import { Edit } from "@material-ui/icons";
+import EditProfile from "../EditProfile";
 import Header from "../../components/Header";
 import { IObject } from "../../interfaces";
 import { Link } from "react-router-dom";
-import Login from "../../components/Login";
+import Login from "../Login";
+import LoginContainer from "../../componentContainers/LoginContainer";
 import PostPage from "../../components/PostPage";
 import PostsContainer from "../../componentContainers/PostsContainer";
-import React from "react";
 import RegisterContainer from "../../componentContainers/RegisterContainer";
 import Registration from "../Registration";
 import Service from "../../services/service";
@@ -16,7 +19,14 @@ import ServiceContext from "../../contexts/service-context";
 import classes from "./App.module.scss";
 
 function App(props: IObject) {
-  const { isLoading, setIsLoading } = props;
+  const { isLoading, setIsLoading, loginUser, logoutUser, user } = props;
+  useEffect(() => {
+    const savedUser = localStorage.getItem("user");
+    if (savedUser) {
+      loginUser(JSON.parse(savedUser));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   return (
     <div className="App">
       <AppProvider
@@ -24,7 +34,7 @@ function App(props: IObject) {
           setIsLoading,
         }}
       >
-        <Header />
+        <Header user={user} logoutUser={logoutUser} />
         {isLoading && (
           <div className="CircularProgress__Wrapper">
             <CircularProgress />{" "}
@@ -37,19 +47,18 @@ function App(props: IObject) {
         <Route path="/articles/:slug" component={PostPage} />
         <Route
           path="/sign-up"
-          render={(props) => {
+          component={RegisterContainer}
+          /*render={(props) => {
             return (
               <AppConsumer>
-                {(setIsLoading) => (
-                  <Registration {...props} setIsLoading={setIsLoading} />
-                )}
+                {(setIsLoading) => <RegisterContainer {...props} />}
               </AppConsumer>
             );
-          }}
+          }} */
         />
         <Route
           path="/sign-in"
-          render={(props) => {
+          /* render={(props) => {
             return (
               <AppConsumer>
                 {(setIsLoading) => (
@@ -57,8 +66,10 @@ function App(props: IObject) {
                 )}
               </AppConsumer>
             );
-          }}
+          }} */
+          component={LoginContainer}
         />
+        <Route exact path="/profile" component={EditProfile} />
       </AppProvider>
     </div>
   );

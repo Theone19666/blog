@@ -15,9 +15,16 @@ import { useHistory } from "react-router-dom";
 const classNames = require("classnames");
 
 function Registration(props: IObject) {
-  const { register, handleSubmit, errors, getValues, setError } = useForm();
+  const {
+    register,
+    handleSubmit,
+    errors,
+    getValues,
+    setError,
+    clearErrors,
+  } = useForm();
   const [success, setSuccess] = useState(false);
-  const { setIsLoading } = props?.setIsLoading;
+  const { setIsLoading } = props;
   const RegitstrationClassName = classNames("Profile-Contaier");
   const TitleClassName = classNames("FormTitle");
   const FieldTitleClassName = classNames(classes.FieldTitle);
@@ -52,17 +59,29 @@ function Registration(props: IObject) {
     return Service.registerUser(userInfo);
   };
 
-  const loginUser = (userInfo: IObject) => {
+  /* const loginUser = (userInfo: IObject) => {
     return Service.loginUser(userInfo);
-  };
+  }; */
 
   const onSubmit = (data: any) => {
     const userInfo = { ...data };
     delete userInfo.repeatPassword;
     delete userInfo.agreement;
     setIsLoading(true);
-    registerUser({ body: { user: userInfo } })
+    registerUser({ user: userInfo })
       .then((resp: IObject) => {
+        // const { user } = resp;
+        if (resp.errors) {
+          const keyError = Object.keys(resp.errors)[0];
+          setError("registrationError", {
+            message: `${keyError} ${resp.errors[Object.keys(resp.errors)[0]]}`,
+          });
+          setTimeout(() => clearErrors(), 3000);
+          throw new Error("Произошла ошибка при регистрации");
+        }
+      })
+
+      /* .then((resp: IObject) => {
         // const { user } = resp;
         if (resp.errors) {
           const keyError = Object.keys(resp.errors)[0];
@@ -90,18 +109,23 @@ function Registration(props: IObject) {
           throw new Error("Произошла ошибка при авторизации");
         }
         localStorage.setItem("user", JSON.stringify(resp.user));
-      })
+      }) */
       .then((resp: any) => {
-        /*history.push({
-          pathname: "/",
-        }); */
-        setIsLoading(false);
         setSuccess(true);
+        setTimeout(() => {
+          history.push({
+            pathname: "/sign-in",
+          });
+        }, 3000);
       })
       .catch((error: any) => {
         setIsLoading(false);
+        console.log(error);
         // setRegistrationError(true);
         //throw new Error("Произошла ошибка при регистрации");
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
   };
   return (
@@ -198,7 +222,12 @@ function Registration(props: IObject) {
         {errors.registrationError && (
           <Alert color="error">{errors.registrationError.message}</Alert>
         )}
-        {success && <Alert color="success">Регистрация успешно пройдена</Alert>}
+        {success && (
+          <Alert color="success">
+            Регистрация успешно пройдена. Вы будете переброшены на страницу
+            авторизации
+          </Alert>
+        )}
       </form>
     </div>
   );
