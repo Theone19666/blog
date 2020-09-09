@@ -119,7 +119,7 @@ function Registration(props: IObject) {
         }, 3000);
       })
       .catch((error: any) => {
-        setIsLoading(false);
+        //  setIsLoading(false);
         console.log(error);
         // setRegistrationError(true);
         //throw new Error("Произошла ошибка при регистрации");

@@ -1,14 +1,17 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { Alert } from "@material-ui/lab";
 import FormField from "../../components/FormField";
+import { IObject } from "../../interfaces";
 import Service from "../../services/service";
 import classes from "../../containers/Registration/Registration.module.scss";
 import { useForm } from "react-hook-form";
+import { useHistory } from "react-router-dom";
 
 const classNames = require("classnames");
 
-function EditProfile() {
+function EditProfile(props: IObject) {
+  const { setIsLoading, setUser, user } = props;
   const {
     register,
     handleSubmit,
@@ -31,16 +34,65 @@ function EditProfile() {
     [classes.Field__error]: errors.username,
   });
   const avatarFieldClassName = classNames(FieldClassName, {
-    [classes.Field__error]: errors.avatar,
+    [classes.Field__error]: errors.image,
   });
   const ErrorClassName = classNames(classes.Error);
   const ButtonClassName = classNames(classes.Button);
   const SignInWrapperClassName = classNames(classes.SignInWrapper);
   const [success, setSuccess] = useState(false);
-  const onSubmit = () => console.log("submit");
+  let history = useHistory();
+
+  const updateUser = (body: IObject, headers: IObject) => {
+    return Service.updateUser(body, headers);
+  };
+  const onSubmit = (data: any) => {
+    setIsLoading(true);
+    const userInfo = { user: { ...data } };
+    const headers = {
+      Authorization: `Token ${user.token}`,
+    };
+    updateUser(userInfo, headers)
+      .then((resp: any) => {
+        //console.log("resp", resp);
+        const { user } = resp;
+        if (resp.errors) {
+          const keyError = Object.keys(resp.errors)[0];
+          setError("updatingError", {
+            message: `${keyError} ${resp.errors[Object.keys(resp.errors)[0]]}`,
+          });
+          setTimeout(() => clearErrors(), 3000);
+          throw new Error("Произошла ошибка при изменении данных пользователя");
+        }
+        return user;
+      })
+      .then((resp: IObject) => {
+        setUser(resp);
+        setSuccess(true);
+        setTimeout(() => {
+          setSuccess(false);
+        }, 3000);
+      })
+      .catch((error: any) => {
+        console.log(error);
+        setError("updatingError", {
+          message: "Произошла ошибка при изменении данных пользователя",
+        });
+        setTimeout(() => clearErrors(), 3000);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  };
+  /*useEffect(() => {
+    if (!user || !Object.keys(user).length) {
+      history.push({
+        pathname: "/sign-in",
+      });
+    }
+  }, [user]); */
   return (
     <div className={LoginClassName}>
-      <h4 className={TitleClassName}>Sign In</h4>
+      <h4 className={TitleClassName}>Edit Profile</h4>
       <form onSubmit={handleSubmit(onSubmit)}>
         <FormField
           title="Username"
@@ -51,6 +103,7 @@ function EditProfile() {
           register={register}
           rules={{ required: true, maxLength: 20, minLength: 3 }}
           ref={register({ required: true, maxLength: 20, minLength: 3 })}
+          defaultValue={user.username}
         />
         {errors.username && (
           <div className={ErrorClassName}>
@@ -66,6 +119,7 @@ function EditProfile() {
           inputClassNames={emailFieldClassName}
           register={register}
           ref={register({ required: true, pattern: /@{1}/gi })}
+          defaultValue={user.email}
         />
         {errors.email && (
           <div className={ErrorClassName}>
@@ -80,7 +134,7 @@ function EditProfile() {
           titleClassNames={FieldTitleClassName}
           inputClassNames={passwordFieldClassName}
           register={register}
-          ref={register({ maxLength: 40, minLength: 6 })}
+          ref={register({ required: true, maxLength: 40, minLength: 6 })}
         />
         {errors.password && (
           <div className={ErrorClassName}>
@@ -89,15 +143,15 @@ function EditProfile() {
         )}
         <FormField
           title="Avatar image"
-          name="avatar"
+          name="image"
           placeholder="Avatar image"
           type="text"
           titleClassNames={FieldTitleClassName}
           inputClassNames={avatarFieldClassName}
-          register={register}
-          ref={register({ pattern: /^http{s.}:\/\/{1}/gi })}
+          ref={register({ pattern: /^(ftp|http|https):\/\/[^ "]+$/gi })}
+          defaultValue={user.image}
         />
-        {errors.avatar && (
+        {errors.image && (
           <div className={ErrorClassName}>
             avatar image должен быть корректным url
           </div>
@@ -105,8 +159,8 @@ function EditProfile() {
         <button type="submit" className={ButtonClassName}>
           Save
         </button>
-        {errors.editingError && (
-          <Alert color="error">{errors.editingError.message}</Alert>
+        {errors.updatingError && (
+          <Alert color="error">{errors.updatingError.message}</Alert>
         )}
         {success && (
           <Alert color="success">Изменение профиля прошло успешно</Alert>

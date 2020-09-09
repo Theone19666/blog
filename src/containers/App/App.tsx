@@ -5,6 +5,7 @@ import { Route, Switch, withRouter } from "react-router-dom";
 import { CircularProgress } from "@material-ui/core";
 import { Edit } from "@material-ui/icons";
 import EditProfile from "../EditProfile";
+import EditProfileContainer from "../../componentContainers/EditProfileContainer";
 import Header from "../../components/Header";
 import { IObject } from "../../interfaces";
 import { Link } from "react-router-dom";
@@ -69,7 +70,7 @@ function App(props: IObject) {
           }} */
           component={LoginContainer}
         />
-        <Route exact path="/profile" component={EditProfile} />
+        <Route exact path="/profile" component={EditProfileContainer} />
       </AppProvider>
     </div>
   );

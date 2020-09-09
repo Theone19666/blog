@@ -15,6 +15,7 @@ const FormField = React.forwardRef((props: IObject, ref: any) => {
     titleClassNames = "",
     inputClassNames = "",
     onInput = () => {},
+    defaultValue = "",
   } = props;
   const FieldTitleClassName = classNames(classes.FieldTitle, titleClassNames);
   const FieldClassName = classNames(classes.Field, inputClassNames);
@@ -28,6 +29,7 @@ const FormField = React.forwardRef((props: IObject, ref: any) => {
         className={FieldClassName}
         placeholder={placeholder}
         onInput={onInput}
+        defaultValue={defaultValue}
       />
     </React.Fragment>
   );

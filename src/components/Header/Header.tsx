@@ -83,7 +83,7 @@ function getHtml(userInfo: IObject, logOut: Function) {
 
 function Header(props: IObject) {
   const { user, logoutUser } = props;
-  console.log("user", user);
+  //console.log("user", user);
   const logOut = () => {
     if (user?.email) {
       //  localStorage.removeItem("user");

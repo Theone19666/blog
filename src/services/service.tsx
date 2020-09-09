@@ -17,6 +17,7 @@ function sendPostRequest({
   method = "POST",
   headers = {},
 }) {
+  //console.log("headers", headers);
   return fetch(`${APIURL}/${url}`, {
     body: JSON.stringify(body),
     headers,
@@ -38,6 +39,9 @@ export default class Service {
   static getPost = (slug: string) => {
     return sendGetRequest(`articles/${slug}`);
   };
+  static getCurrentUser = () => {
+    return sendGetRequest("/api/user");
+  };
   static registerUser = (body = {}) => {
     return sendPostRequest({
       url: "users",
@@ -53,6 +57,17 @@ export default class Service {
       body,
       headers: {
         "Content-Type": "application/json; charset=utf-8",
+      },
+    });
+  };
+  static updateUser = (body = {}, headers = {}) => {
+    return sendPostRequest({
+      url: "user",
+      method: "PUT",
+      body,
+      headers: {
+        "Content-Type": "application/json; charset=utf-8",
+        ...headers,
       },
     });
   };
