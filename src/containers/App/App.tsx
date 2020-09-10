@@ -12,6 +12,7 @@ import { Link } from "react-router-dom";
 import Login from "../Login";
 import LoginContainer from "../../componentContainers/LoginContainer";
 import PostPage from "../../components/PostPage";
+import PostPageContainer from "../../componentContainers/PostPageContainer";
 import PostsContainer from "../../componentContainers/PostsContainer";
 import RegisterContainer from "../../componentContainers/RegisterContainer";
 import Registration from "../Registration";
@@ -45,7 +46,7 @@ function App(props: IObject) {
         <Route exact path="/?page=:page?" component={PostsContainer} />
         <Route exact path="/articles" component={PostsContainer} />
         <Route exact path="/articles?page=:page?" component={PostsContainer} />
-        <Route path="/articles/:slug" component={PostPage} />
+        <Route path="/articles/:slug" component={PostPageContainer} />
         <Route
           path="/sign-up"
           component={RegisterContainer}

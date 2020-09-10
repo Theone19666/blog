@@ -11,6 +11,16 @@ function sendGetRequest(url: string = "") {
       throw new Error(err);
     });
 }
+function sendDeleteRequest(url: string = "", headers: IObject) {
+  return fetch(`${APIURL}/${url}`, { method: "DELETE", headers })
+    .then((resp: any) => {
+      if (!resp) throw new Error(resp);
+      return resp.json();
+    })
+    .catch((err: any) => {
+      throw new Error(err);
+    });
+}
 function sendPostRequest({
   url = "",
   body = {},
@@ -70,5 +80,8 @@ export default class Service {
         ...headers,
       },
     });
+  };
+  static deletePost = (slug: string, headers: IObject) => {
+    return sendDeleteRequest(`articles/${slug}`, headers);
   };
 }

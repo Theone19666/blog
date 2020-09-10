@@ -2,12 +2,16 @@ import { FavoriteBorderOutlined, Mood } from "@material-ui/icons";
 import React, { useEffect, useState } from "react";
 
 import { Alert } from "@material-ui/lab";
+import Button from "../Button";
 import { CircularProgress } from "@material-ui/core";
+import DeleteDialog from "../DeleteDialog";
 import { IObject } from "../../interfaces";
 import Service from "../../services/service";
 import classes from "./PostPage.module.scss";
 import moment from "moment";
+import { useHistory } from "react-router-dom";
 
+const ReactMarkdown = require("react-markdown");
 const classNames = require("classnames");
 
 function checkIsImage(imageName: string) {
@@ -21,14 +25,54 @@ function checkIsImage(imageName: string) {
 }
 
 function PostPage(props: IObject) {
-  const { match } = props;
+  const { match, setIsLoading, user } = props;
+  const { slug } = match.params;
+  let history = useHistory();
   const [post, setPost] = useState({});
   const [isError, setError] = useState(false);
-  const [isLoading, setLoading] = useState(true);
+  const [deletingError, setDeletingError] = useState("");
+  const [showDialog, setShowDialog] = useState(false);
+  const toggleDeleteDialog = (showDialog: boolean) => {
+    setShowDialog(showDialog);
+  };
+
+  const deletePost = () => {
+    if (!user.token) {
+      history.push({
+        pathname: "/sign-in",
+      });
+      return;
+    }
+    if (!slug) return;
+    const headers = {
+      Authorization: `Token ${user.token}`,
+    };
+    setIsLoading(true);
+    Service.deletePost(slug, headers)
+      .then((resp: any) => {
+        if (resp?.errors) {
+          const keyError = Object.keys(resp.errors)[0];
+          const errorMessage = `${keyError} ${
+            resp.errors[Object.keys(resp.errors)[0]]
+          }`;
+          setDeletingError(errorMessage);
+          setTimeout(() => setDeletingError(""), 5000);
+          return;
+        }
+        history.push({
+          pathname: "/sign-in",
+        });
+      })
+      .catch((error) => {
+        setDeletingError(error);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  };
   useEffect(() => {
-    const { slug } = match.params;
     if (!slug) {
-      setLoading(false);
+      setIsLoading(false);
       setError(true);
       return;
     }
@@ -38,20 +82,34 @@ function PostPage(props: IObject) {
           throw new Error(resp.error);
         }
         setPost(resp.article);
-        setLoading(false);
       })
       .catch((error) => {
-        setLoading(false);
         setError(true);
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
   }, []);
-  return Content(isLoading, isError, post);
+  return Content(
+    isError,
+    post,
+    user,
+    toggleDeleteDialog,
+    showDialog,
+    deletingError,
+    deletePost
+  );
 }
 
-const Content = (isLoading: boolean, isError: boolean, post: IObject) => {
-  if (isLoading) {
-    return <CircularProgress />;
-  }
+const Content = (
+  isError: boolean,
+  post: IObject,
+  user: IObject,
+  toggleDeleteDialog: any,
+  showDialog: boolean,
+  deletingError: string,
+  deletePost: any
+) => {
   if (isError) {
     return <Alert color="error">При загрузке данных произошла ошибка</Alert>;
   }
@@ -76,12 +134,16 @@ const Content = (isLoading: boolean, isError: boolean, post: IObject) => {
   const UserInfoWrapper = classNames(classes.UserInfoWrapper);
   const Login = classNames(classes.Login);
   const Date = classNames(classes.Date);
-  const LoginImg = classNames(classes.LoginImg);
+  const LoginImg = classNames("LoginImg");
   const FavoriteCount = classNames(classes.FavoriteCount);
   const TagsContainer = classNames(classes.TagsContainer);
   const Tag = classNames(classes.Tag);
   const Description = classNames(classes.Description);
   const Body = classNames(classes.Body);
+  const DescriptionWrapepr = classNames(classes.DescriptionWrapepr);
+  const EditingButtonsWrapepr = classNames(classes.EditingButtonsWrapepr);
+  const DeleteButton = classNames(classes.DeleteButton);
+  const EditButton = classNames(classes.EditButton);
 
   const tagsHtml = tagList?.map((item: string, index: number) => {
     return (
@@ -118,8 +180,38 @@ const Content = (isLoading: boolean, isError: boolean, post: IObject) => {
           </div>
         </div>
         <div className={TagsContainer}>{tagsHtml}</div>
-        <div className={Description}>{description}</div>
-        <div className={Body}>{body}</div>
+        <div className={DescriptionWrapepr}>
+          <div className={Description}>{description}</div>
+          {user && (
+            <div className={EditingButtonsWrapepr}>
+              <Button
+                variant="outlined"
+                size="small"
+                text="Delete"
+                classNames={DeleteButton}
+                onClick={() => toggleDeleteDialog(true)}
+              />
+              <Button
+                variant="outlined"
+                size="small"
+                text="Edit"
+                classNames={EditButton}
+              />
+            </div>
+          )}
+        </div>
+
+        {body && (
+          <div className={Body}>
+            <ReactMarkdown source={body} />
+          </div>
+        )}
+        <DeleteDialog
+          open={showDialog}
+          close={() => toggleDeleteDialog(false)}
+          error={deletingError}
+          deletePost={deletePost}
+        />
       </div>
     </div>
   );
