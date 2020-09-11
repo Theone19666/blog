@@ -16,10 +16,6 @@
 }
 .Field {
   width: 100%;
-
-  &:last-of-type {
-    margin-bottom: 21px;
-  }
   &__error {
     border-color: $error;
   }

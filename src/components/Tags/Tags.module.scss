@@ -1,0 +1,11 @@
+@import "../../scss/colors.scss";
+
+.TagWrapper {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+.TagInput {
+  width: 300px;
+  margin-right: 17px;
+}

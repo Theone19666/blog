@@ -1,0 +1,11 @@
+@import "../../scss/colors.scss";
+
+.CreateEditPost {
+  padding: 48px 32px;
+  width: 90%;
+  max-width: 938px;
+}
+.tagContainerClass,
+.FieldTitle:not(:first-of-type) {
+  margin-top: 21px;
+}

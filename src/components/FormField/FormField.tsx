@@ -16,21 +16,38 @@ const FormField = React.forwardRef((props: IObject, ref: any) => {
     inputClassNames = "",
     onInput = () => {},
     defaultValue = "",
+    type = "text",
   } = props;
   const FieldTitleClassName = classNames(classes.FieldTitle, titleClassNames);
   const FieldClassName = classNames(classes.Field, inputClassNames);
+  const TextareaClassName = classNames(
+    classes.Field,
+    classes.TextArea,
+    inputClassNames
+  );
   return (
     <React.Fragment>
       <div className={FieldTitleClassName}>{title}</div>
-      <input
-        ref={ref}
-        type={inputType}
-        name={name}
-        className={FieldClassName}
-        placeholder={placeholder}
-        onInput={onInput}
-        defaultValue={defaultValue}
-      />
+      {type === "textarea" ? (
+        <textarea
+          ref={ref}
+          name={name}
+          className={TextareaClassName}
+          placeholder={placeholder}
+          onInput={onInput}
+          defaultValue={defaultValue}
+        ></textarea>
+      ) : (
+        <input
+          ref={ref}
+          type={inputType}
+          name={name}
+          className={FieldClassName}
+          placeholder={placeholder}
+          onInput={onInput}
+          defaultValue={defaultValue}
+        />
+      )}
     </React.Fragment>
   );
   // }

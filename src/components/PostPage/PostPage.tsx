@@ -10,6 +10,7 @@ import Service from "../../services/service";
 import classes from "./PostPage.module.scss";
 import moment from "moment";
 import { useHistory } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 const ReactMarkdown = require("react-markdown");
 const classNames = require("classnames");
@@ -91,6 +92,7 @@ function PostPage(props: IObject) {
       });
   }, []);
   return Content(
+    slug,
     isError,
     post,
     user,
@@ -102,6 +104,7 @@ function PostPage(props: IObject) {
 }
 
 const Content = (
+  slug: string,
   isError: boolean,
   post: IObject,
   user: IObject,
@@ -191,12 +194,14 @@ const Content = (
                 classNames={DeleteButton}
                 onClick={() => toggleDeleteDialog(true)}
               />
-              <Button
-                variant="outlined"
-                size="small"
-                text="Edit"
-                classNames={EditButton}
-              />
+              <Link to={`/articles/${slug}/edit`}>
+                <Button
+                  variant="outlined"
+                  size="small"
+                  text="Edit"
+                  classNames={EditButton}
+                />
+              </Link>
             </div>
           )}
         </div>

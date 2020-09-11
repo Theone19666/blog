@@ -3,6 +3,7 @@ import React, { useEffect } from "react";
 import { Route, Switch, withRouter } from "react-router-dom";
 
 import { CircularProgress } from "@material-ui/core";
+import CreateEditPostContainer from "../../componentContainers/CreateEditPostContainer";
 import { Edit } from "@material-ui/icons";
 import EditProfile from "../EditProfile";
 import EditProfileContainer from "../../componentContainers/EditProfileContainer";
@@ -46,7 +47,7 @@ function App(props: IObject) {
         <Route exact path="/?page=:page?" component={PostsContainer} />
         <Route exact path="/articles" component={PostsContainer} />
         <Route exact path="/articles?page=:page?" component={PostsContainer} />
-        <Route path="/articles/:slug" component={PostPageContainer} />
+        <Route exact path="/articles/:slug" component={PostPageContainer} />
         <Route
           path="/sign-up"
           component={RegisterContainer}
@@ -72,6 +73,11 @@ function App(props: IObject) {
           component={LoginContainer}
         />
         <Route exact path="/profile" component={EditProfileContainer} />
+        <Route
+          exact
+          path="/articles/:slug/edit"
+          component={CreateEditPostContainer}
+        />
       </AppProvider>
     </div>
   );
