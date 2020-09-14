@@ -10,7 +10,7 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 import { IObject } from "../../interfaces";
 
 function DeleteDialog(props: IObject) {
-  const { open, close, error, deletePost } = props;
+  const { open, close, deletePost } = props;
   // const [open, setOpen] = useState(false);
 
   const handleClose = () => {
@@ -31,7 +31,7 @@ function DeleteDialog(props: IObject) {
             Вы действительно хотите удалить эту статью?
           </DialogContentText>
         </DialogContent>
-        {error && <Alert color="error">{error}</Alert>}
+
         <DialogActions>
           <Button onClick={deletePost} color="primary">
             Да

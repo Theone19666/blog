@@ -81,6 +81,28 @@ export default class Service {
       },
     });
   };
+  static addNewPost = (body = {}, headers = {}) => {
+    return sendPostRequest({
+      url: "articles",
+      body,
+      headers: {
+        "Content-Type": "application/json; charset=utf-8",
+        ...headers,
+      },
+    });
+  };
+  static updatePost = (body = {}, headers = {}, slug: string) => {
+    if (!slug) return;
+    return sendPostRequest({
+      url: `articles/${slug}`,
+      method: "PUT",
+      body,
+      headers: {
+        "Content-Type": "application/json; charset=utf-8",
+        ...headers,
+      },
+    });
+  };
   static deletePost = (slug: string, headers: IObject) => {
     return sendDeleteRequest(`articles/${slug}`, headers);
   };

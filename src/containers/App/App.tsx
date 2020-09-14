@@ -78,6 +78,11 @@ function App(props: IObject) {
           path="/articles/:slug/edit"
           component={CreateEditPostContainer}
         />
+        <Route
+          exact
+          path="/new-article"
+          component={CreateEditPostContainer}
+        />
       </AppProvider>
     </div>
   );

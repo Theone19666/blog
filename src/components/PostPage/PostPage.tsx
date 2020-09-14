@@ -6,11 +6,11 @@ import Button from "../Button";
 import { CircularProgress } from "@material-ui/core";
 import DeleteDialog from "../DeleteDialog";
 import { IObject } from "../../interfaces";
+import { Link } from "react-router-dom";
 import Service from "../../services/service";
 import classes from "./PostPage.module.scss";
 import moment from "moment";
 import { useHistory } from "react-router-dom";
-import { Link } from "react-router-dom";
 
 const ReactMarkdown = require("react-markdown");
 const classNames = require("classnames");
@@ -45,10 +45,10 @@ function PostPage(props: IObject) {
       return;
     }
     if (!slug) return;
+    setIsLoading(true);
     const headers = {
       Authorization: `Token ${user.token}`,
     };
-    setIsLoading(true);
     Service.deletePost(slug, headers)
       .then((resp: any) => {
         if (resp?.errors) {
@@ -61,14 +61,16 @@ function PostPage(props: IObject) {
           return;
         }
         history.push({
-          pathname: "/sign-in",
+          pathname: "/articles",
         });
+        return;
       })
       .catch((error) => {
         setDeletingError(error);
       })
       .finally(() => {
         setIsLoading(false);
+        setShowDialog(false);
       });
   };
   useEffect(() => {
@@ -205,12 +207,12 @@ const Content = (
             </div>
           )}
         </div>
-
         {body && (
           <div className={Body}>
             <ReactMarkdown source={body} />
           </div>
         )}
+        {deletingError && <Alert color="error">{deletingError}</Alert>}
         <DeleteDialog
           open={showDialog}
           close={() => toggleDeleteDialog(false)}

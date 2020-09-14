@@ -5,7 +5,13 @@
   width: 90%;
   max-width: 938px;
 }
-.tagContainerClass,
+.TagsContainer {
+  margin-bottom: 21px;
+}
+.TagsContainer,
 .FieldTitle:not(:first-of-type) {
   margin-top: 21px;
+}
+.SubmitButton {
+  max-width: 319px;
 }
