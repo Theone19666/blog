@@ -1,8 +1,6 @@
 import React, { useState } from "react";
 
 import { Alert } from "@material-ui/lab";
-import { AppConsumer } from "../../contexts/app-context";
-import Button from "../../components/Button";
 import Checkbox from "../../components/Checkbox";
 import FormField from "../../components/FormField";
 import { IObject } from "../../interfaces";

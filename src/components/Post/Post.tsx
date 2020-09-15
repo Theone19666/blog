@@ -1,5 +1,6 @@
 import { FavoriteBorderOutlined, Mood } from "@material-ui/icons";
 
+import { Alert } from "@material-ui/lab";
 import { IObject } from "../../interfaces";
 import { Link } from "react-router-dom";
 import React from "react";
@@ -12,23 +13,22 @@ const classNames = require("classnames");
 function Post(props: IObject) {
   const {
     author,
-    body,
     createdAt,
     tagList,
     favoritesCount,
     favorited,
     description,
     title,
-    updatedAt,
     classNamesList,
     slug,
+    error = "",
+    onFavoriteIconClick,
   } = props;
 
   const Post = classNames(classes.Post, classNamesList);
   const PostTitleWrapper = classNames(classes.PostTitleWrapper);
   const Title = classNames(classes.Title);
   const PostHeaderWrapper = classNames(classes.PostHeaderWrapper);
-  const Like = classNames(classes.Like);
   const UserInfo = classNames(classes.UserInfo);
   const UserInfoWrapper = classNames(classes.UserInfoWrapper);
   const Login = classNames(classes.Login);
@@ -60,7 +60,10 @@ function Post(props: IObject) {
       <div className={PostHeaderWrapper}>
         <div className={PostTitleWrapper}>
           {slugHtml}
-          <FavoriteBorderOutlined />
+          <FavoriteBorderOutlined
+            onClick={onFavoriteIconClick}
+            color={favorited ? "error" : "inherit"}
+          />
           <div className={FavoriteCount}>{favoritesCount}</div>
         </div>
         <div className={UserInfoWrapper}>
@@ -81,6 +84,7 @@ function Post(props: IObject) {
           )}
         </div>
       </div>
+      {error && <Alert color="error">{error}</Alert>}
       <div className={TagsContainer}>{tagsHtml}</div>
       <div className={Description}>{description}</div>
     </div>

@@ -3,7 +3,6 @@ import React, { useEffect, useState } from "react";
 
 import { Alert } from "@material-ui/lab";
 import Button from "../Button";
-import { CircularProgress } from "@material-ui/core";
 import DeleteDialog from "../DeleteDialog";
 import { IObject } from "../../interfaces";
 import { Link } from "react-router-dom";
@@ -31,6 +30,7 @@ function PostPage(props: IObject) {
   let history = useHistory();
   const [post, setPost] = useState({});
   const [isError, setError] = useState(false);
+  const [favoriteError, setFavoriteError] = useState("");
   const [deletingError, setDeletingError] = useState("");
   const [showDialog, setShowDialog] = useState(false);
   const toggleDeleteDialog = (showDialog: boolean) => {
@@ -73,7 +73,37 @@ function PostPage(props: IObject) {
         setShowDialog(false);
       });
   };
+  const favoritePost = (slug: string, favorited: boolean) => {
+    if (!user?.token) {
+      history.push({
+        pathname: "/sign-in",
+      });
+      return;
+    }
+    const headers = {
+      Authorization: `Token ${user.token}`,
+    };
+    let action: any;
+    if (favorited) {
+      action = Service.unfavoritePost(slug, headers);
+    } else {
+      action = Service.favoritePost(slug, headers);
+    }
+    action.then((resp: any) => {
+      if (resp?.errors) {
+        const keyError = Object.keys(resp.errors)[0];
+        const errorMessage = `${keyError} ${
+          resp.errors[Object.keys(resp.errors)[0]]
+        }`;
+        setFavoriteError(errorMessage);
+        setTimeout(() => setFavoriteError(""), 5000);
+        return;
+      }
+      setPost(resp.article);
+    });
+  };
   useEffect(() => {
+    setIsLoading(true);
     if (!slug) {
       setIsLoading(false);
       setError(true);
@@ -92,6 +122,7 @@ function PostPage(props: IObject) {
       .finally(() => {
         setIsLoading(false);
       });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return Content(
     slug,
@@ -101,7 +132,9 @@ function PostPage(props: IObject) {
     toggleDeleteDialog,
     showDialog,
     deletingError,
-    deletePost
+    deletePost,
+    favoritePost,
+    favoriteError
   );
 }
 
@@ -113,7 +146,9 @@ const Content = (
   toggleDeleteDialog: any,
   showDialog: boolean,
   deletingError: string,
-  deletePost: any
+  deletePost: any,
+  favoritePost: Function,
+  favoriteError: any
 ) => {
   if (isError) {
     return <Alert color="error">При загрузке данных произошла ошибка</Alert>;
@@ -129,12 +164,12 @@ const Content = (
     description,
     body,
     tagList,
+    favorited,
   } = post;
   const Post = classNames(classes.Post);
   const PostTitleWrapper = classNames(classes.PostTitleWrapper);
   const Title = classNames(classes.Title);
   const PostHeaderWrapper = classNames(classes.PostHeaderWrapper);
-  const Like = classNames(classes.Like);
   const UserInfo = classNames(classes.UserInfo);
   const UserInfoWrapper = classNames(classes.UserInfoWrapper);
   const Login = classNames(classes.Login);
@@ -163,7 +198,10 @@ const Content = (
         <div className={PostHeaderWrapper}>
           <div className={PostTitleWrapper}>
             <h4 className={Title}>{title}</h4>
-            <FavoriteBorderOutlined />
+            <FavoriteBorderOutlined
+              color={favorited ? "error" : "inherit"}
+              onClick={() => favoritePost(slug, favorited)}
+            />
             <div className={FavoriteCount}>{favoritesCount}</div>
           </div>
           <div className={UserInfoWrapper}>
@@ -184,6 +222,7 @@ const Content = (
             )}
           </div>
         </div>
+        {favoriteError && <Alert color="error">{favoriteError}</Alert>}
         <div className={TagsContainer}>{tagsHtml}</div>
         <div className={DescriptionWrapepr}>
           <div className={Description}>{description}</div>

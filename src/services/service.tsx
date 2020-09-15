@@ -106,4 +106,17 @@ export default class Service {
   static deletePost = (slug: string, headers: IObject) => {
     return sendDeleteRequest(`articles/${slug}`, headers);
   };
+  static favoritePost = (slug: string, headers = {}) => {
+    if (!slug) return;
+    return sendPostRequest({
+      url: `articles/${slug}/favorite`,
+      headers: {
+        "Content-Type": "application/json; charset=utf-8",
+        ...headers,
+      },
+    });
+  };
+  static unfavoritePost = (slug: string, headers: IObject) => {
+    return sendDeleteRequest(`articles/${slug}/favorite`, headers);
+  };
 }

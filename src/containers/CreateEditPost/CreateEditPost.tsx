@@ -17,19 +17,12 @@ function CreateEditPost(props: IObject) {
   let history = useHistory();
   let { slug }: IObject = useParams();
   const [post, setPost] = useState("");
-  const [error, setRequestError] = useState("");
+  const [requestError, setRequestError] = useState("");
   const [pageType, setPageType] = useState("create");
   const [tags, setTags] = useState([""]);
   const [success, setSuccess] = useState(false);
 
-  const {
-    register,
-    handleSubmit,
-    errors,
-    getValues,
-    setError,
-    clearErrors,
-  } = useForm();
+  const { register, handleSubmit, errors, setError, clearErrors } = useForm();
   const CreateEditPostClassName = classNames(
     classesCreateEdit.CreateEditPost,
     "Profile-Contaier"
@@ -61,14 +54,40 @@ function CreateEditPost(props: IObject) {
     setIsLoading(true);
     Service.getPost(slug)
       .then((resp) => {
-        if (resp.errors) {
-          setRequestError("Произошла ошибка");
+        if (resp.errors || resp.error) {
+          const error = resp.errors || resp.error;
+          const keyError = Array.isArray(error)
+            ? Object.keys(error)[0]
+            : "ошибка";
+          const text = Array.isArray(error)
+            ? resp.errors[Object.keys(resp.errors)[0]]
+            : error;
+          setError("requestError", {
+            message: `${keyError} ${text}`,
+          });
+          setTimeout(
+            () =>
+              history.push({
+                pathname: "/articles",
+              }),
+            5000
+          );
           return;
         }
         setPost(resp.article);
-        setTags(resp.article.tagList.length ? resp.article.tagList : [""]);
+        setTags(resp.article?.tagList?.length ? resp.article.tagList : [""]);
       })
-      .catch((error) => console.log(error))
+      .catch((error) => {
+        console.log(error);
+        setError("requestError", {
+          message: error,
+        });
+        setTimeout(() => {
+          history.push({
+            pathname: "/articles",
+          });
+        }, 5000);
+      })
       .finally(() => setIsLoading(false));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -91,7 +110,7 @@ function CreateEditPost(props: IObject) {
     console.log("data", data);
     if (!user?.token) {
       history.push({
-        pathname: "/sign-in",
+        pathname: "/articles",
       });
       return;
     }
