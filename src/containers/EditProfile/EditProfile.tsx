@@ -12,14 +12,8 @@ import PropTypes from "prop-types";
 const classNames = require("classnames");
 
 function EditProfile(props: IObject) {
-  const { setIsLoading, setUser, user } = props;
-  const {
-    register,
-    handleSubmit,
-    errors,
-    setError,
-    clearErrors,
-  } = useForm();
+  const { setIsLoading, setUser, user, isLoading } = props;
+  const { register, handleSubmit, errors, setError, clearErrors } = useForm();
   const LoginClassName = classNames("Profile-Contaier");
   const TitleClassName = classNames("FormTitle");
   const FieldTitleClassName = classNames(classes.FieldTitle);
@@ -83,6 +77,9 @@ function EditProfile(props: IObject) {
         setIsLoading(false);
       });
   };
+  if (isLoading) {
+    return null;
+  }
   return (
     <div className={LoginClassName}>
       <h4 className={TitleClassName}>Edit Profile</h4>
@@ -163,14 +160,19 @@ function EditProfile(props: IObject) {
   );
 }
 EditProfile.propTypes = {
-  setIsLoading: PropTypes.func, setUser: PropTypes.func, user : PropTypes.object,
+  setIsLoading: PropTypes.func,
+  setUser: PropTypes.func,
+  user: PropTypes.object,
+  isLoading: PropTypes.bool,
+  rootClassName: PropTypes.string
 };
 
 EditProfile.defaultProps = {
-  rootClassName: '',
+  rootClassName: "",
   setIsLoading: () => {},
   setUser: () => {},
-  user: {}
+  user: {},
+  isLoading: false
 };
 
 export default EditProfile;

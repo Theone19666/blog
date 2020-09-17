@@ -14,7 +14,7 @@ import PropTypes from "prop-types";
 const classNames = require("classnames");
 
 function CreateEditPost(props: IObject) {
-  const { setIsLoading, user } = props;
+  const { setIsLoading, user, isLoading } = props;
   let history = useHistory();
   let { slug }: IObject = useParams();
   const [post, setPost] = useState("");
@@ -159,6 +159,9 @@ function CreateEditPost(props: IObject) {
       });
   };
   const { title, description, body }: any = post || {};
+  if (isLoading) {
+    return null;
+  }
   return (
     <div className={CreateEditPostClassName}>
       <h4 className={TitleClassName}>
@@ -236,12 +239,15 @@ function CreateEditPost(props: IObject) {
 }
 
 CreateEditPost.propTypes = {
-  setIsLoading: PropTypes.func, user : PropTypes.object,
+  setIsLoading: PropTypes.func,
+  user: PropTypes.object,
+  isLoading: PropTypes.bool
 };
 
 CreateEditPost.defaultProps = {
   user: {},
-  setIsLoading: () => {}
+  setIsLoading: () => {},
+  isLoading: false
 };
 
 export default CreateEditPost;

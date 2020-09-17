@@ -26,7 +26,7 @@ function checkIsImage(imageName: string) {
 }
 
 function PostPage(props: IObject) {
-  const { match, setIsLoading, user } = props;
+  const { match, setIsLoading, user, isLoading } = props;
   const { slug } = match.params;
   let history = useHistory();
   const [post, setPost] = useState({});
@@ -135,7 +135,8 @@ function PostPage(props: IObject) {
     deletingError,
     deletePost,
     favoritePost,
-    favoriteError
+    favoriteError,
+    isLoading
   );
 }
 
@@ -149,13 +150,14 @@ const Content = (
   deletingError: string,
   deletePost: any,
   favoritePost: Function,
-  favoriteError: any
+  favoriteError: any,
+  isLoading: boolean
 ) => {
+  if (isLoading || !post) {
+    return null;
+  }
   if (isError) {
     return <Alert color="error">При загрузке данных произошла ошибка</Alert>;
-  }
-  if (!post) {
-    return null;
   }
   const {
     favoritesCount,
@@ -268,12 +270,14 @@ PostPage.propTypes = {
   match: PropTypes.object,
   setIsLoading: PropTypes.func,
   user: PropTypes.object,
+  isLoading: PropTypes.bool
 };
 
 PostPage.defaultProps = {
   match: {},
   user: {},
   setIsLoading: () => {},
+  isLoading: false
 };
 
 export default PostPage;

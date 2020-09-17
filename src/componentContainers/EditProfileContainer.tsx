@@ -9,6 +9,7 @@ import { withRouter } from "react-router-dom";
 const mapStateToProps = (state: IObject) => {
   return {
     user: state.user,
+    isLoading: state.posts.isLoading
   };
 };
 
