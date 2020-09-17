@@ -184,6 +184,9 @@ const Content = (
   const EditingButtonsWrapepr = classNames(classes.EditingButtonsWrapepr);
   const DeleteButton = classNames(classes.DeleteButton);
   const EditButton = classNames(classes.EditButton);
+  const PostInfoWrapper = classNames(classes.PostInfoWrapper);
+  const UserButtonsInfoWrapper = classNames(classes.UserButtonsInfoWrapper);
+
 
   const tagsHtml = tagList?.map((item: string, index: number) => {
     return (
@@ -195,7 +198,7 @@ const Content = (
   return (
     <div className="Container">
       <div className={Post}>
-        <div className={PostHeaderWrapper}>
+        <div className={PostInfoWrapper}>
           <div className={PostTitleWrapper}>
             <h4 className={Title}>{title}</h4>
             <FavoriteBorderOutlined
@@ -204,6 +207,19 @@ const Content = (
             />
             <div className={FavoriteCount}>{favoritesCount}</div>
           </div>
+          {favoriteError && <Alert color="error">{favoriteError}</Alert>}
+          <div className={TagsContainer}>{tagsHtml}</div>
+          <div className={DescriptionWrapepr}>
+            <div className={Description}>{description}</div>
+          </div>
+          {body && (
+            <div className={Body}>
+              <ReactMarkdown source={body} />
+            </div>
+          )}
+          {deletingError && <Alert color="error">{deletingError}</Alert>}
+        </div>
+        <div className={UserButtonsInfoWrapper}>
           <div className={UserInfoWrapper}>
             <div className={UserInfo}>
               <div className={Login}>{author?.username}</div>
@@ -221,12 +237,7 @@ const Content = (
               <Mood style={{ width: "46px", height: "46" }} />
             )}
           </div>
-        </div>
-        {favoriteError && <Alert color="error">{favoriteError}</Alert>}
-        <div className={TagsContainer}>{tagsHtml}</div>
-        <div className={DescriptionWrapepr}>
-          <div className={Description}>{description}</div>
-          {user && (
+          {user?.token && (
             <div className={EditingButtonsWrapepr}>
               <Button
                 variant="outlined"
@@ -246,19 +257,13 @@ const Content = (
             </div>
           )}
         </div>
-        {body && (
-          <div className={Body}>
-            <ReactMarkdown source={body} />
-          </div>
-        )}
-        {deletingError && <Alert color="error">{deletingError}</Alert>}
-        <DeleteDialog
-          open={showDialog}
-          close={() => toggleDeleteDialog(false)}
-          error={deletingError}
-          deletePost={deletePost}
-        />
       </div>
+      <DeleteDialog
+        open={showDialog}
+        close={() => toggleDeleteDialog(false)}
+        error={deletingError}
+        deletePost={deletePost}
+      />
     </div>
   );
 };
