@@ -6,6 +6,7 @@ import React from "react";
 import { checkIsImage } from "../../utils";
 import classes from "./Header.module.scss";
 import classnames from "classnames";
+import PropTypes from "prop-types";
 
 const HeaderClass = classnames(classes.Header);
 const TitleClass = classnames(classes.Title);
@@ -24,7 +25,7 @@ const LoginClass = classnames(classes.Login);
 const LoginImg = classnames("LoginImg", classes.LoginImg);
 
 function getHtml(userInfo: IObject, logOut: Function) {
-  if (userInfo?.email) {
+  if (userInfo?.token) {
     return (
       <React.Fragment>
         <Link to="/new-article">
@@ -36,13 +37,13 @@ function getHtml(userInfo: IObject, logOut: Function) {
           />
         </Link>
         <Link to="/profile">
-          <div className={LoginClass}>{userInfo.username}</div>
+          <div className={LoginClass}>{userInfo?.username}</div>
         </Link>
         <Link to="/profile">
           {checkIsImage(userInfo?.image) ? (
             <img
-              src={userInfo.image}
-              alt={userInfo.username}
+              src={userInfo?.image}
+              alt={userInfo?.username}
               className={LoginImg}
             />
           ) : (
@@ -83,10 +84,8 @@ function getHtml(userInfo: IObject, logOut: Function) {
 
 function Header(props: IObject) {
   const { user, logoutUser } = props;
-  //console.log("user", user);
   const logOut = () => {
     if (user?.email) {
-      //  localStorage.removeItem("user");
       logoutUser();
     }
   };
@@ -99,5 +98,15 @@ function Header(props: IObject) {
     </header>
   );
 }
+
+Header.propTypes = {
+  user: PropTypes.object,
+  onClick: PropTypes.func,
+};
+
+Header.defaultProps = {
+  user: null,
+  onClick: () => {}
+};
 
 export default Header;

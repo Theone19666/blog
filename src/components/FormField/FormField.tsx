@@ -1,22 +1,21 @@
 import { IObject } from "../../interfaces";
-import Input from "../Input";
 import React from "react";
 import classes from "./FormField.module.scss";
+import PropTypes from "prop-types";
 
 const classNames = require("classnames");
 
 const FormField = React.forwardRef((props: IObject, ref: any) => {
-  // function FormField(props: IObject) {
   const {
-    title = "",
-    inputType = "text",
-    name = "",
-    placeholder = "",
-    titleClassNames = "",
-    inputClassNames = "",
-    onInput = () => {},
-    defaultValue = "",
-    type = "text",
+    title,
+    inputType,
+    name,
+    placeholder,
+    titleClassNames,
+    inputClassNames,
+    onInput,
+    defaultValue,
+    type,
   } = props;
   const FieldTitleClassName = classNames(classes.FieldTitle, titleClassNames);
   const FieldClassName = classNames(classes.Field, inputClassNames);
@@ -50,7 +49,31 @@ const FormField = React.forwardRef((props: IObject, ref: any) => {
       )}
     </React.Fragment>
   );
-  // }
 });
+
+FormField.propTypes = {
+  title: PropTypes.string,
+  inputType: PropTypes.string,
+  name: PropTypes.string,
+  placeholder:PropTypes.string,
+  titleClassNames:PropTypes.string,
+  inputClassNames:PropTypes.string,
+  defaultValue:PropTypes.string,
+  type:PropTypes.string,
+  onInput: PropTypes.func,
+};
+
+FormField.defaultProps = {
+  title: "",
+  inputType: "text",
+  name: '',
+  placeholder: '',
+  titleClassNames: '',
+  inputClassNames: '',
+  defaultValue: '',
+  type: 'text',
+  onInput: () => {}
+};
+
 
 export default FormField;

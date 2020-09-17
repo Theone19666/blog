@@ -180,7 +180,6 @@ const Content = (
   const Tag = classNames(classes.Tag);
   const Description = classNames(classes.Description);
   const Body = classNames(classes.Body);
-  const DescriptionWrapepr = classNames(classes.DescriptionWrapepr);
   const EditingButtonsWrapepr = classNames(classes.EditingButtonsWrapepr);
   const DeleteButton = classNames(classes.DeleteButton);
   const EditButton = classNames(classes.EditButton);
@@ -209,9 +208,9 @@ const Content = (
           </div>
           {favoriteError && <Alert color="error">{favoriteError}</Alert>}
           <div className={TagsContainer}>{tagsHtml}</div>
-          <div className={DescriptionWrapepr}>
+      
             <div className={Description}>{description}</div>
-          </div>
+   
           {body && (
             <div className={Body}>
               <ReactMarkdown source={body} />
