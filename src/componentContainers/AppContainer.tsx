@@ -4,7 +4,6 @@ import App from "../containers/App";
 import { IObject } from "../interfaces";
 import { connect } from "react-redux";
 import { setIsLoading } from "../store/actions/postsActions";
-import { withRouter } from "react-router-dom";
 
 const mapStateToProps = (state: IObject) => {
   return {

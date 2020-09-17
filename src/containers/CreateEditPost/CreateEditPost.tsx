@@ -9,6 +9,7 @@ import Tags from "../../components/Tags";
 import classes from "../../containers/Registration/Registration.module.scss";
 import classesCreateEdit from "./CreateEditPost.module.scss";
 import { useForm } from "react-hook-form";
+import PropTypes from "prop-types";
 
 const classNames = require("classnames");
 
@@ -17,7 +18,6 @@ function CreateEditPost(props: IObject) {
   let history = useHistory();
   let { slug }: IObject = useParams();
   const [post, setPost] = useState("");
-  const [requestError, setRequestError] = useState("");
   const [pageType, setPageType] = useState("create");
   const [tags, setTags] = useState([""]);
   const [success, setSuccess] = useState(false);
@@ -107,7 +107,6 @@ function CreateEditPost(props: IObject) {
     setTags([...tags.slice(0, index), value, ...tags.slice(index + 1)]);
   };
   const onSubmit = (data: any) => {
-    console.log("data", data);
     if (!user?.token) {
       history.push({
         pathname: "/articles",
@@ -235,5 +234,14 @@ function CreateEditPost(props: IObject) {
     </div>
   );
 }
+
+CreateEditPost.propTypes = {
+  setIsLoading: PropTypes.func, user : PropTypes.object,
+};
+
+CreateEditPost.defaultProps = {
+  user: {},
+  setIsLoading: () => {}
+};
 
 export default CreateEditPost;

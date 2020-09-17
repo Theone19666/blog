@@ -10,6 +10,7 @@ import Service from "../../services/service";
 import classes from "./PostPage.module.scss";
 import moment from "moment";
 import { useHistory } from "react-router-dom";
+import PropTypes from "prop-types";
 
 const ReactMarkdown = require("react-markdown");
 const classNames = require("classnames");
@@ -38,7 +39,7 @@ function PostPage(props: IObject) {
   };
 
   const deletePost = () => {
-    if (!user.token) {
+    if (!user?.token) {
       history.push({
         pathname: "/sign-in",
       });
@@ -169,7 +170,6 @@ const Content = (
   const Post = classNames(classes.Post);
   const PostTitleWrapper = classNames(classes.PostTitleWrapper);
   const Title = classNames(classes.Title);
-  const PostHeaderWrapper = classNames(classes.PostHeaderWrapper);
   const UserInfo = classNames(classes.UserInfo);
   const UserInfoWrapper = classNames(classes.UserInfoWrapper);
   const Login = classNames(classes.Login);
@@ -185,7 +185,6 @@ const Content = (
   const EditButton = classNames(classes.EditButton);
   const PostInfoWrapper = classNames(classes.PostInfoWrapper);
   const UserButtonsInfoWrapper = classNames(classes.UserButtonsInfoWrapper);
-
 
   const tagsHtml = tagList?.map((item: string, index: number) => {
     return (
@@ -208,9 +207,7 @@ const Content = (
           </div>
           {favoriteError && <Alert color="error">{favoriteError}</Alert>}
           <div className={TagsContainer}>{tagsHtml}</div>
-      
-            <div className={Description}>{description}</div>
-   
+          <div className={Description}>{description}</div>
           {body && (
             <div className={Body}>
               <ReactMarkdown source={body} />
@@ -265,6 +262,18 @@ const Content = (
       />
     </div>
   );
+};
+
+PostPage.propTypes = {
+  match: PropTypes.object,
+  setIsLoading: PropTypes.func,
+  user: PropTypes.object,
+};
+
+PostPage.defaultProps = {
+  match: {},
+  user: {},
+  setIsLoading: () => {},
 };
 
 export default PostPage;

@@ -10,6 +10,8 @@ import classes from "./Registration.module.scss";
 import { useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
 
+import PropTypes from "prop-types";
+
 const classNames = require("classnames");
 
 function Registration(props: IObject) {
@@ -44,7 +46,6 @@ function Registration(props: IObject) {
   const ButtonClassName = classNames(classes.Button);
   const SignInWrapperClassName = classNames(classes.SignInWrapper);
   const ErrorClassName = classNames(classes.Error);
-  const AgreementWrapperClassName = classNames(classes.AgreementWrapper);
   let history = useHistory();
 
   const onRepeatPasswordInput = () => {
@@ -57,10 +58,6 @@ function Registration(props: IObject) {
     return Service.registerUser(userInfo);
   };
 
-  /* const loginUser = (userInfo: IObject) => {
-    return Service.loginUser(userInfo);
-  }; */
-
   const onSubmit = (data: any) => {
     const userInfo = { ...data };
     delete userInfo.repeatPassword;
@@ -68,7 +65,6 @@ function Registration(props: IObject) {
     setIsLoading(true);
     registerUser({ user: userInfo })
       .then((resp: IObject) => {
-        // const { user } = resp;
         if (resp.errors) {
           const keyError = Object.keys(resp.errors)[0];
           setError("registrationError", {
@@ -78,36 +74,6 @@ function Registration(props: IObject) {
           throw new Error("Произошла ошибка при регистрации");
         }
       })
-
-      /* .then((resp: IObject) => {
-        // const { user } = resp;
-        if (resp.errors) {
-          const keyError = Object.keys(resp.errors)[0];
-          setError("registrationError", {
-            message: `${keyError} ${resp.errors[Object.keys(resp.errors)[0]]}`,
-          });
-          throw new Error("Произошла ошибка при регистрации");
-        }
-        const body = {
-          user: {
-            email: userInfo.email,
-            password: userInfo.password,
-          },
-        };
-        return loginUser({
-          body,
-        });
-      })
-      .then((resp: any) => {
-        if (resp.errors) {
-          const keyError = Object.keys(resp.errors)[0];
-          setError("registrationError", {
-            message: `${keyError} ${resp.errors[Object.keys(resp.errors)[0]]}`,
-          });
-          throw new Error("Произошла ошибка при авторизации");
-        }
-        localStorage.setItem("user", JSON.stringify(resp.user));
-      }) */
       .then((resp: any) => {
         setSuccess(true);
         setTimeout(() => {
@@ -117,10 +83,7 @@ function Registration(props: IObject) {
         }, 3000);
       })
       .catch((error: any) => {
-        //  setIsLoading(false);
         console.log(error);
-        // setRegistrationError(true);
-        //throw new Error("Произошла ошибка при регистрации");
       })
       .finally(() => {
         setIsLoading(false);
@@ -230,5 +193,13 @@ function Registration(props: IObject) {
     </div>
   );
 }
+
+Registration.propTypes = {
+  setIsLoading: PropTypes.func,
+};
+
+Registration.defaultProps = {
+  setIsLoading: () => {}
+};
 
 export default Registration;

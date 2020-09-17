@@ -11,9 +11,6 @@ import classes from "./Posts.module.scss";
 const classNames = require("classnames");
 
 function getHtml(isLoading: boolean = true, isError: boolean, postsHtml: any) {
-  /* if (isLoading) {
-    return <CircularProgress />;
-  } */
   if (isError) {
     return <Alert color="error">При загрузке данных произошла ошибка</Alert>;
   }
@@ -50,12 +47,11 @@ function getAccordingPagePosts(page: number, posts: IObject[]) {
 
 function Posts(props: IObject) {
   const {
-    posts = [],
+    posts,
     fetchPostsList,
     isLoading,
     isError,
     history,
-    match,
     user,
     updatePost,
   } = props;
@@ -151,8 +147,20 @@ function Posts(props: IObject) {
 export default Posts;
 
 Posts.propTypes = {
-  setPostsList: PropTypes.func,
+  posts: PropTypes.object,
+  fetchPostsList: PropTypes.func,
+  isLoading: PropTypes.bool,
+  isError: PropTypes.bool,
+  history: PropTypes.object,
+  user: PropTypes.object,
+  updatePost: PropTypes.func,
 };
 Posts.defaultProps = {
-  setPostsList: () => [],
+  posts: [],
+  fetchPostsList: () => [],
+  isLoading: false,
+  isError: false,
+  history: {},
+  user: {},
+  updatePost: () => [],
 };

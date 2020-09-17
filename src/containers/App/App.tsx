@@ -10,6 +10,7 @@ import PostPageContainer from "../../componentContainers/PostPageContainer";
 import PostsContainer from "../../componentContainers/PostsContainer";
 import RegisterContainer from "../../componentContainers/RegisterContainer";
 import { Route } from "react-router-dom";
+import PropTypes from "prop-types";
 
 function App(props: IObject) {
   const { isLoading, loginUser, logoutUser, user } = props;
@@ -46,4 +47,17 @@ function App(props: IObject) {
   );
 }
 
+App.propTypes = {
+  isLoading: PropTypes.bool,
+  loginUser: PropTypes.func,
+  logoutUser: PropTypes.func,
+  user: PropTypes.object,
+};
+
+App.defaultProps = {
+  loginUser: () => {},
+  logoutUser: () => {},
+  isLoading: false,
+  user: null,
+};
 export default App;

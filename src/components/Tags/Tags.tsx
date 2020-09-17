@@ -3,7 +3,7 @@ import { IObject } from "../../interfaces";
 import React from "react";
 import classes from "../FormField/FormField.module.scss";
 import tagsClasses from "./Tags.module.scss";
-
+import PropTypes from "prop-types";
 const classNames = require("classnames");
 
 function Tags(props: IObject) {
@@ -67,5 +67,23 @@ function Tags(props: IObject) {
     </div>
   );
 }
+
+Tags.propTypes = {
+  titleClassNames: PropTypes.string,
+  tagsList: PropTypes.array,
+  tagContainerClass: PropTypes.string,
+  addTag: PropTypes.func,
+  deleteTag: PropTypes.func,
+  onTagNameChange: PropTypes.func,
+};
+
+Tags.defaultProps = {
+  titleClassNames: "",
+  tagsList: [],
+  tagContainerClass: '',
+  addTag: () => {},
+  deleteTag: () => {},
+  onTagNameChange: () => {}
+};
 
 export default Tags;

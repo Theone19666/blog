@@ -8,6 +8,7 @@ import Service from "../../services/service";
 import classes from "../../containers/Registration/Registration.module.scss";
 import { useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
+import PropTypes from "prop-types";
 
 const classNames = require("classnames");
 
@@ -17,7 +18,6 @@ function Login(props: IObject) {
     register,
     handleSubmit,
     errors,
-    getValues,
     setError,
     clearErrors,
   } = useForm();
@@ -128,5 +128,14 @@ function Login(props: IObject) {
     </div>
   );
 }
+
+Login.propTypes = {
+  setIsLoading: PropTypes.func, setUser: PropTypes.func,
+};
+
+Login.defaultProps = {
+  setUser: () => {},
+  setIsLoading: () => {}
+};
 
 export default Login;

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
 import { Alert } from "@material-ui/lab";
 import FormField from "../../components/FormField";
@@ -7,6 +7,7 @@ import Service from "../../services/service";
 import classes from "../../containers/Registration/Registration.module.scss";
 import { useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
+import PropTypes from "prop-types";
 
 const classNames = require("classnames");
 
@@ -16,7 +17,6 @@ function EditProfile(props: IObject) {
     register,
     handleSubmit,
     errors,
-    getValues,
     setError,
     clearErrors,
   } = useForm();
@@ -83,13 +83,6 @@ function EditProfile(props: IObject) {
         setIsLoading(false);
       });
   };
-  /*useEffect(() => {
-    if (!user || !Object.keys(user).length) {
-      history.push({
-        pathname: "/sign-in",
-      });
-    }
-  }, [user]); */
   return (
     <div className={LoginClassName}>
       <h4 className={TitleClassName}>Edit Profile</h4>
@@ -169,5 +162,15 @@ function EditProfile(props: IObject) {
     </div>
   );
 }
+EditProfile.propTypes = {
+  setIsLoading: PropTypes.func, setUser: PropTypes.func, user : PropTypes.object,
+};
+
+EditProfile.defaultProps = {
+  rootClassName: '',
+  setIsLoading: () => {},
+  setUser: () => {},
+  user: {}
+};
 
 export default EditProfile;
