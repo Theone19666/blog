@@ -2,12 +2,17 @@ import { FavoriteBorderOutlined, Mood } from "@material-ui/icons";
 import React, { useEffect, useState } from "react";
 
 import { Alert } from "@material-ui/lab";
-import { CircularProgress } from "@material-ui/core";
+import Button from "../Button";
+import DeleteDialog from "../DeleteDialog";
 import { IObject } from "../../interfaces";
+import { Link } from "react-router-dom";
 import Service from "../../services/service";
 import classes from "./PostPage.module.scss";
 import moment from "moment";
+import { useHistory } from "react-router-dom";
+import PropTypes from "prop-types";
 
+const ReactMarkdown = require("react-markdown");
 const classNames = require("classnames");
 
 function checkIsImage(imageName: string) {
@@ -21,14 +26,87 @@ function checkIsImage(imageName: string) {
 }
 
 function PostPage(props: IObject) {
-  const { match } = props;
+  const { match, setIsLoading, user, isLoading } = props;
+  const { slug } = match.params;
+  let history = useHistory();
   const [post, setPost] = useState({});
   const [isError, setError] = useState(false);
-  const [isLoading, setLoading] = useState(true);
+  const [favoriteError, setFavoriteError] = useState("");
+  const [deletingError, setDeletingError] = useState("");
+  const [showDialog, setShowDialog] = useState(false);
+  const toggleDeleteDialog = (showDialog: boolean) => {
+    setShowDialog(showDialog);
+  };
+
+  const deletePost = () => {
+    if (!user?.token) {
+      history.push({
+        pathname: "/sign-in",
+      });
+      return;
+    }
+    if (!slug) return;
+    setIsLoading(true);
+    const headers = {
+      Authorization: `Token ${user.token}`,
+    };
+    Service.deletePost(slug, headers)
+      .then((resp: any) => {
+        if (resp?.errors) {
+          const keyError = Object.keys(resp.errors)[0];
+          const errorMessage = `${keyError} ${
+            resp.errors[Object.keys(resp.errors)[0]]
+          }`;
+          setDeletingError(errorMessage);
+          setTimeout(() => setDeletingError(""), 5000);
+          return;
+        }
+        history.push({
+          pathname: "/articles",
+        });
+        return;
+      })
+      .catch((error) => {
+        setDeletingError(error);
+      })
+      .finally(() => {
+        setIsLoading(false);
+        setShowDialog(false);
+      });
+  };
+  const favoritePost = (slug: string, favorited: boolean) => {
+    if (!user?.token) {
+      history.push({
+        pathname: "/sign-in",
+      });
+      return;
+    }
+    const headers = {
+      Authorization: `Token ${user.token}`,
+    };
+    let action: any;
+    if (favorited) {
+      action = Service.unfavoritePost(slug, headers);
+    } else {
+      action = Service.favoritePost(slug, headers);
+    }
+    action.then((resp: any) => {
+      if (resp?.errors) {
+        const keyError = Object.keys(resp.errors)[0];
+        const errorMessage = `${keyError} ${
+          resp.errors[Object.keys(resp.errors)[0]]
+        }`;
+        setFavoriteError(errorMessage);
+        setTimeout(() => setFavoriteError(""), 5000);
+        return;
+      }
+      setPost(resp.article);
+    });
+  };
   useEffect(() => {
-    const { slug } = match.params;
+    setIsLoading(true);
     if (!slug) {
-      setLoading(false);
+      setIsLoading(false);
       setError(true);
       return;
     }
@@ -38,25 +116,48 @@ function PostPage(props: IObject) {
           throw new Error(resp.error);
         }
         setPost(resp.article);
-        setLoading(false);
       })
       .catch((error) => {
-        setLoading(false);
         setError(true);
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  return Content(isLoading, isError, post);
+  return Content(
+    slug,
+    isError,
+    post,
+    user,
+    toggleDeleteDialog,
+    showDialog,
+    deletingError,
+    deletePost,
+    favoritePost,
+    favoriteError,
+    isLoading
+  );
 }
 
-const Content = (isLoading: boolean, isError: boolean, post: IObject) => {
-  if (isLoading) {
-    return <CircularProgress />;
+const Content = (
+  slug: string,
+  isError: boolean,
+  post: IObject,
+  user: IObject,
+  toggleDeleteDialog: any,
+  showDialog: boolean,
+  deletingError: string,
+  deletePost: any,
+  favoritePost: Function,
+  favoriteError: any,
+  isLoading: boolean
+) => {
+  if (isLoading || !post) {
+    return null;
   }
   if (isError) {
     return <Alert color="error">При загрузке данных произошла ошибка</Alert>;
-  }
-  if (!post) {
-    return null;
   }
   const {
     favoritesCount,
@@ -66,22 +167,26 @@ const Content = (isLoading: boolean, isError: boolean, post: IObject) => {
     description,
     body,
     tagList,
+    favorited,
   } = post;
   const Post = classNames(classes.Post);
   const PostTitleWrapper = classNames(classes.PostTitleWrapper);
   const Title = classNames(classes.Title);
-  const PostHeaderWrapper = classNames(classes.PostHeaderWrapper);
-  const Like = classNames(classes.Like);
   const UserInfo = classNames(classes.UserInfo);
   const UserInfoWrapper = classNames(classes.UserInfoWrapper);
   const Login = classNames(classes.Login);
   const Date = classNames(classes.Date);
-  const LoginImg = classNames(classes.LoginImg);
+  const LoginImg = classNames("LoginImg");
   const FavoriteCount = classNames(classes.FavoriteCount);
   const TagsContainer = classNames(classes.TagsContainer);
   const Tag = classNames(classes.Tag);
   const Description = classNames(classes.Description);
   const Body = classNames(classes.Body);
+  const EditingButtonsWrapepr = classNames(classes.EditingButtonsWrapepr);
+  const DeleteButton = classNames(classes.DeleteButton);
+  const EditButton = classNames(classes.EditButton);
+  const PostInfoWrapper = classNames(classes.PostInfoWrapper);
+  const UserButtonsInfoWrapper = classNames(classes.UserButtonsInfoWrapper);
 
   const tagsHtml = tagList?.map((item: string, index: number) => {
     return (
@@ -93,12 +198,26 @@ const Content = (isLoading: boolean, isError: boolean, post: IObject) => {
   return (
     <div className="Container">
       <div className={Post}>
-        <div className={PostHeaderWrapper}>
+        <div className={PostInfoWrapper}>
           <div className={PostTitleWrapper}>
             <h4 className={Title}>{title}</h4>
-            <FavoriteBorderOutlined />
+            <FavoriteBorderOutlined
+              color={favorited ? "error" : "inherit"}
+              onClick={() => favoritePost(slug, favorited)}
+            />
             <div className={FavoriteCount}>{favoritesCount}</div>
           </div>
+          {favoriteError && <Alert color="error">{favoriteError}</Alert>}
+          <div className={TagsContainer}>{tagsHtml}</div>
+          <div className={Description}>{description}</div>
+          {body && (
+            <div className={Body}>
+              <ReactMarkdown source={body} />
+            </div>
+          )}
+          {deletingError && <Alert color="error">{deletingError}</Alert>}
+        </div>
+        <div className={UserButtonsInfoWrapper}>
           <div className={UserInfoWrapper}>
             <div className={UserInfo}>
               <div className={Login}>{author?.username}</div>
@@ -116,13 +235,49 @@ const Content = (isLoading: boolean, isError: boolean, post: IObject) => {
               <Mood style={{ width: "46px", height: "46" }} />
             )}
           </div>
+          {user?.token && (
+            <div className={EditingButtonsWrapepr}>
+              <Button
+                variant="outlined"
+                size="small"
+                text="Delete"
+                classNames={DeleteButton}
+                onClick={() => toggleDeleteDialog(true)}
+              />
+              <Link to={`/articles/${slug}/edit`}>
+                <Button
+                  variant="outlined"
+                  size="small"
+                  text="Edit"
+                  classNames={EditButton}
+                />
+              </Link>
+            </div>
+          )}
         </div>
-        <div className={TagsContainer}>{tagsHtml}</div>
-        <div className={Description}>{description}</div>
-        <div className={Body}>{body}</div>
       </div>
+      <DeleteDialog
+        open={showDialog}
+        close={() => toggleDeleteDialog(false)}
+        error={deletingError}
+        deletePost={deletePost}
+      />
     </div>
   );
+};
+
+PostPage.propTypes = {
+  match: PropTypes.object,
+  setIsLoading: PropTypes.func,
+  user: PropTypes.object,
+  isLoading: PropTypes.bool
+};
+
+PostPage.defaultProps = {
+  match: {},
+  user: {},
+  setIsLoading: () => {},
+  isLoading: false
 };
 
 export default PostPage;

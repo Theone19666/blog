@@ -1,0 +1,25 @@
+@import "../../scss/colors.scss";
+
+.TagWrapper {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  &:not(:last-child) {
+    margin-bottom: 5px;
+  }
+}
+.TagInput {
+  width: 300px;
+  margin-right: 17px;
+}
+.DeleteButton {
+  color: $error !important;
+  border-color: $error !important;
+  text-transform: none !important;
+  margin-right: 17px !important;
+}
+.AddButton {
+  color: $accent !important;
+  border-color: $accent !important;
+  text-transform: none !important;
+}

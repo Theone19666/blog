@@ -3,4 +3,32 @@
   font-size: 20px;
   line-height: 28px;
   color: $postText;
+  margin-top: 25px;
+}
+.Description{
+  margin-top: 16px;
+}
+.EditingButtonsWrapepr {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+}
+.DeleteButton {
+  text-transform: capitalize !important;
+  border-color: $error !important;
+  color: $error !important;
+  margin-right: 12px !important;
+}
+.EditButton {
+  text-transform: capitalize !important;
+  border-color: $success !important;
+  color: $success !important;
+}
+.UserButtonsInfoWrapper {
+  display: flex;
+  flex-direction: column;
+
+}
+.UserInfoWrapper {
+  margin-bottom: 30px;
 }

@@ -46,3 +46,10 @@ export const setIsError = (isError: Boolean) => {
     isError,
   };
 };
+export const updatePost = (updatedPostInfo: {}, index: number) => {
+  return {
+    type: "UPDATE_POST",
+    updatedPostInfo,
+    index,
+  };
+};

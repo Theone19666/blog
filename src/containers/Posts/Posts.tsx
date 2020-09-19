@@ -1,20 +1,16 @@
-import React, { useContext, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
 import { Alert } from "@material-ui/lab";
-import { CircularProgress } from "@material-ui/core";
 import { IObject } from "../../interfaces";
 import { Pagination } from "@material-ui/lab";
 import Post from "../../components/Post";
 import PropTypes from "prop-types";
-import ServiceContext from "../../contexts/service-context";
+import Service from "../../services/service";
 import classes from "./Posts.module.scss";
 
 const classNames = require("classnames");
 
 function getHtml(isLoading: boolean = true, isError: boolean, postsHtml: any) {
-  if (isLoading) {
-    return <CircularProgress />;
-  }
   if (isError) {
     return <Alert color="error">При загрузке данных произошла ошибка</Alert>;
   }
@@ -51,20 +47,53 @@ function getAccordingPagePosts(page: number, posts: IObject[]) {
 
 function Posts(props: IObject) {
   const {
-    posts = [],
+    posts,
     fetchPostsList,
     isLoading,
     isError,
     history,
-    match,
+    user,
+    updatePost,
   } = props;
-  // const Service = useContext(ServiceContext);
+  const ininitalError: IObject = {};
+  const [error, setError] = useState(ininitalError);
   const PostClassName = classNames(classes.Post);
   const Posts = classNames("Container");
 
   useEffect(() => {
     fetchPostsList();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const favoritePost = (slug: string, favorited: boolean, index: number) => {
+    if (!user?.token) {
+      history.push({
+        pathname: "/sign-in",
+      });
+      return;
+    }
+    const headers = {
+      Authorization: `Token ${user.token}`,
+    };
+    let action: any;
+    if (favorited) {
+      action = Service.unfavoritePost(slug, headers);
+    } else {
+      action = Service.favoritePost(slug, headers);
+    }
+    action.then((resp: any) => {
+      if (resp?.errors) {
+        const keyError = Object.keys(resp.errors)[0];
+        const errorMessage = `${keyError} ${
+          resp.errors[Object.keys(resp.errors)[0]]
+        }`;
+        setError({ message: errorMessage, slug });
+        setTimeout(() => setError({}), 5000);
+        return;
+      }
+      updatePost(resp.article, index);
+    });
+  };
 
   const postsHtml = Array.isArray(posts) ? (
     getAccordingPagePosts(
@@ -84,7 +113,11 @@ function Posts(props: IObject) {
           description={item.description}
           title={item.title}
           updatedAt={item.updatedAt}
-          slug={item.title}
+          slug={item.slug}
+          error={error && error?.slug === item.slug ? error.message : null}
+          onFavoriteIconClick={() =>
+            favoritePost(item.slug, item.favorited, key)
+          }
         />
       );
     })
@@ -93,7 +126,6 @@ function Posts(props: IObject) {
   );
 
   const onPaginationChange = (event: IObject, page: number): void => {
-    // console.log(history);
     history.push({
       pathname: history.location.pathname,
       search: `?page=${page}`,
@@ -105,7 +137,9 @@ function Posts(props: IObject) {
     isError,
     <div className={Posts}>
       {postsHtml}
-      <Pagination color="primary" count={5} onChange={onPaginationChange} />
+      {posts.length && (
+        <Pagination color="primary" count={5} onChange={onPaginationChange} />
+      )}
     </div>
   );
 }
@@ -113,8 +147,20 @@ function Posts(props: IObject) {
 export default Posts;
 
 Posts.propTypes = {
-  setPostsList: PropTypes.func,
+  posts: PropTypes.object,
+  fetchPostsList: PropTypes.func,
+  isLoading: PropTypes.bool,
+  isError: PropTypes.bool,
+  history: PropTypes.object,
+  user: PropTypes.object,
+  updatePost: PropTypes.func,
 };
 Posts.defaultProps = {
-  setPostsList: () => [],
+  posts: [],
+  fetchPostsList: () => [],
+  isLoading: false,
+  isError: false,
+  history: {},
+  user: {},
+  updatePost: () => [],
 };

@@ -6,6 +6,10 @@
   filter: drop-shadow(0px 4px 12px rgba(0, 0, 0, 0.15));
   width: 100%;
   background-color: white;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: end;
 }
 .PostHeaderWrapper {
   display: flex;
@@ -16,6 +20,7 @@
   display: flex;
   flex-direction: row;
   align-items: center;
+  margin-bottom: 4px;
 }
 .Title {
   color: $accent;
@@ -34,11 +39,7 @@
   text-align: right;
   margin-right: 12px;
 }
-.LoginImg {
-  width: 46px;
-  height: 46px;
-  border-radius: 50%;
-}
+
 .Login {
   font-size: 18px;
   line-height: 28px;
@@ -59,6 +60,7 @@
   display: flex;
   flex-direction: row;
   align-items: center;
+  margin-bottom: 4px;
 }
 .Tag {
   font-size: 12px;
@@ -80,7 +82,11 @@
   font-size: 12px;
   line-height: 22px;
   color: $postText;
+  margin-top: 4px;
   &__more {
     color: $tag;
   }
+}
+.PostInfoWrapper {
+  margin-right: 85px;
 }
