@@ -1,18 +1,21 @@
+import { IState, IUser } from "../../interfaces";
 import React, { useEffect } from "react";
+import { logOutUser, loginUser } from "../../store/actions/userActions";
 
 import { CircularProgress } from "@material-ui/core";
 import CreateEditPostContainer from "../../componentContainers/CreateEditPostContainer";
 import EditProfileContainer from "../../componentContainers/EditProfileContainer";
 import Header from "../../components/Header";
-import { IObject } from "../../interfaces";
+import { IApp } from "./interfaces";
 import LoginContainer from "../../componentContainers/LoginContainer";
 import PostPageContainer from "../../componentContainers/PostPageContainer";
 import PostsContainer from "../../componentContainers/PostsContainer";
 import RegisterContainer from "../../componentContainers/RegisterContainer";
 import { Route } from "react-router-dom";
-import PropTypes from "prop-types";
+import { connect } from "react-redux";
+import { setIsLoading } from "../../store/actions/postsActions";
 
-function App(props: IObject) {
+function App(props: IApp) {
   const { isLoading, loginUser, logoutUser, user } = props;
   useEffect(() => {
     const savedUser = localStorage.getItem("user");
@@ -47,17 +50,17 @@ function App(props: IObject) {
   );
 }
 
-App.propTypes = {
-  isLoading: PropTypes.bool,
-  loginUser: PropTypes.func,
-  logoutUser: PropTypes.func,
-  user: PropTypes.object,
+const mapStateToProps = (state: IState) => {
+  return {
+    isLoading: state.posts.isLoading,
+    user: state.user,
+  };
 };
 
-App.defaultProps = {
-  loginUser: () => {},
-  logoutUser: () => {},
-  isLoading: false,
-  user: null,
-};
-export default App;
+const mapDispatchToProps = (dispatch: Function) => ({
+  setIsLoading: (isLoading: boolean) => dispatch(setIsLoading(isLoading)),
+  loginUser: (user: IUser) => dispatch(loginUser(user)),
+  logoutUser: () => dispatch(logOutUser()),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);

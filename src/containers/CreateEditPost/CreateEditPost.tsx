@@ -1,22 +1,21 @@
+import { ICreatedEditPost, IMatchParams } from "./interfaces";
 import React, { useEffect, useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
 
 import { Alert } from "@material-ui/lab";
 import FormField from "../../components/FormField";
-import { IObject } from "../../interfaces";
 import Service from "../../services/service";
 import Tags from "../../components/Tags";
 import classes from "../../containers/Registration/Registration.module.scss";
 import classesCreateEdit from "./CreateEditPost.module.scss";
 import { useForm } from "react-hook-form";
-import PropTypes from "prop-types";
 
 const classNames = require("classnames");
 
-function CreateEditPost(props: IObject) {
+function CreateEditPost(props: ICreatedEditPost) {
   const { setIsLoading, user, isLoading } = props;
   let history = useHistory();
-  let { slug }: IObject = useParams();
+  const { slug }: IMatchParams = useParams();
   const [post, setPost] = useState("");
   const [pageType, setPageType] = useState("create");
   const [tags, setTags] = useState([""]);
@@ -237,17 +236,5 @@ function CreateEditPost(props: IObject) {
     </div>
   );
 }
-
-CreateEditPost.propTypes = {
-  setIsLoading: PropTypes.func,
-  user: PropTypes.object,
-  isLoading: PropTypes.bool
-};
-
-CreateEditPost.defaultProps = {
-  user: {},
-  setIsLoading: () => {},
-  isLoading: false
-};
 
 export default CreateEditPost;

@@ -27,7 +27,6 @@ function sendPostRequest({
   method = "POST",
   headers = {},
 }) {
-  //console.log("headers", headers);
   return fetch(`${APIURL}/${url}`, {
     body: JSON.stringify(body),
     headers,
