@@ -18,6 +18,7 @@ export interface IAuthor {
   following: boolean;
 }
 export interface IPost {
+  author: IAuthor;
   title: string;
   slug: string;
   body: string;
@@ -37,4 +38,8 @@ export interface IPostState {
 export interface IState {
   posts: IPostState;
   user: IUser;
+}
+export interface IMatchParams {
+  slug: string;
+  params: IObject;
 }

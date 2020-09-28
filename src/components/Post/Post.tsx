@@ -1,17 +1,16 @@
 import { FavoriteBorderOutlined, Mood } from "@material-ui/icons";
 
 import { Alert } from "@material-ui/lab";
-import { IObject } from "../../interfaces";
+import { IPost } from "./interfaces";
 import { Link } from "react-router-dom";
 import React from "react";
 import { checkIsImage } from "../../utils";
 import classes from "./Post.module.scss";
 import moment from "moment";
-import PropTypes from "prop-types";
 
 const classNames = require("classnames");
 
-function Post(props: IObject) {
+function Post(props: IPost) {
   const {
     author,
     createdAt,
@@ -85,33 +84,5 @@ function Post(props: IObject) {
     </div>
   );
 }
-
-Post.propTypes = {
-  author: PropTypes.string,
-  createdAt: PropTypes.string,
-  tagList: PropTypes.array,
-  favoritesCount:PropTypes.number,
-  favorited:PropTypes.bool,
-  description:PropTypes.string,
-  title:PropTypes.string,
-  classNamesList:PropTypes.string,
-  slug:PropTypes.string,
-  error:PropTypes.string,
-  onFavoriteIconClick: PropTypes.func,
-};
-
-Post.defaultProps = {
-  author: "",
-  createdAt: "",
-  tagList: [],
-  favoritesCount: 0,
-  favorited: false,
-  description: '',
-  title: '',
-  classNamesList: '',
-  slug: '',
-  error: '',
-  onFavoriteIconClick: () => {}
-};
 
 export default Post;

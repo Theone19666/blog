@@ -1,20 +1,26 @@
 import React, { useState } from "react";
+import {
+  logOutUser,
+  loginUser,
+  setUser,
+} from "../../store/actions/userActions";
 
 import { Alert } from "@material-ui/lab";
 import Checkbox from "../../components/Checkbox";
 import FormField from "../../components/FormField";
 import { IObject } from "../../interfaces";
+import { IRegistration } from "./interfaces";
 import { Link } from "react-router-dom";
 import Service from "../../services/service";
 import classes from "./Registration.module.scss";
+import { connect } from "react-redux";
+import { setIsLoading } from "../../store/actions/postsActions";
 import { useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
 
-import PropTypes from "prop-types";
-
 const classNames = require("classnames");
 
-function Registration(props: IObject) {
+function Registration(props: IRegistration) {
   const {
     register,
     handleSubmit,
@@ -64,8 +70,8 @@ function Registration(props: IObject) {
     delete userInfo.agreement;
     setIsLoading(true);
     registerUser({ user: userInfo })
-      .then((resp: IObject) => {
-        if (resp.errors) {
+      .then((resp: any) => {
+        if (resp?.errors) {
           const keyError = Object.keys(resp.errors)[0];
           setError("registrationError", {
             message: `${keyError} ${resp.errors[Object.keys(resp.errors)[0]]}`,
@@ -99,7 +105,6 @@ function Registration(props: IObject) {
           placeholder="Username"
           titleClassNames={FieldTitleClassName}
           inputClassNames={usernameFieldClassName}
-          register={register}
           rules={{ required: true, maxLength: 20, minLength: 3 }}
           ref={register({ required: true, maxLength: 20, minLength: 3 })}
         />
@@ -115,7 +120,6 @@ function Registration(props: IObject) {
           type="email"
           titleClassNames={FieldTitleClassName}
           inputClassNames={emailFieldClassName}
-          register={register}
           ref={register({ required: true, pattern: /@{1}/gi })}
         />
         {errors.email && (
@@ -130,7 +134,6 @@ function Registration(props: IObject) {
           type="password"
           titleClassNames={FieldTitleClassName}
           inputClassNames={passwordFieldClassName}
-          register={register}
           ref={register({ required: true, maxLength: 40, minLength: 6 })}
         />
         {errors.password && (
@@ -145,7 +148,6 @@ function Registration(props: IObject) {
           type="password"
           titleClassNames={FieldTitleClassName}
           inputClassNames={repeatPasswordFieldClassName}
-          register={register}
           ref={register({ required: true })}
           onInput={onRepeatPasswordInput}
         />
@@ -159,11 +161,8 @@ function Registration(props: IObject) {
         <Checkbox
           name="agreement"
           text="I agree to the processing of my personal information"
-          required={true}
           classNamesList={CheckboxBlockClassName}
           ref={register({ required: true })}
-          register={register}
-          rules={{ required: true }}
         />
         {errors.agreement && (
           <div className={ErrorClassName}>
@@ -194,12 +193,17 @@ function Registration(props: IObject) {
   );
 }
 
-Registration.propTypes = {
-  setIsLoading: PropTypes.func,
+const mapStateToProps = (state: IObject) => {
+  return {
+    user: state.user,
+  };
 };
 
-Registration.defaultProps = {
-  setIsLoading: () => {}
-};
+const mapDispatchToProps = (dispatch: Function) => ({
+  loginUser: (user: IObject) => dispatch(loginUser(user)),
+  setUser: (user: IObject) => dispatch(setUser(user)),
+  logOutUser: () => dispatch(logOutUser()),
+  setIsLoading: (isLoading: boolean) => dispatch(setIsLoading(isLoading)),
+});
 
-export default Registration;
+export default connect(mapStateToProps, mapDispatchToProps)(Registration);

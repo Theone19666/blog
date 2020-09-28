@@ -1,12 +1,12 @@
 import Button from "../Button";
-import { IObject } from "../../interfaces";
+import { IHeader } from "./interfaces";
+import { IUser } from "../../interfaces";
 import { Link } from "react-router-dom";
 import { Mood } from "@material-ui/icons";
 import React from "react";
 import { checkIsImage } from "../../utils";
 import classes from "./Header.module.scss";
 import classnames from "classnames";
-import PropTypes from "prop-types";
 
 const HeaderClass = classnames(classes.Header);
 const TitleClass = classnames(classes.Title);
@@ -24,7 +24,7 @@ const ButtonLogOut = classnames(classes.Button__Black);
 const LoginClass = classnames(classes.Login);
 const LoginImg = classnames("LoginImg", classes.LoginImg);
 
-function getHtml(userInfo: IObject, logOut: Function) {
+function getHtml(userInfo: IUser, logOut: () => void) {
   if (userInfo?.token) {
     return (
       <React.Fragment>
@@ -82,7 +82,7 @@ function getHtml(userInfo: IObject, logOut: Function) {
   );
 }
 
-function Header(props: IObject) {
+function Header(props: IHeader) {
   const { user, logoutUser } = props;
   const logOut = () => {
     if (user?.email) {
@@ -98,15 +98,5 @@ function Header(props: IObject) {
     </header>
   );
 }
-
-Header.propTypes = {
-  user: PropTypes.object,
-  onClick: PropTypes.func,
-};
-
-Header.defaultProps = {
-  user: null,
-  onClick: () => {}
-};
 
 export default Header;

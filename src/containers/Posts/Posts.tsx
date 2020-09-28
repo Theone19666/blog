@@ -1,64 +1,33 @@
 import React, { useEffect, useState } from "react";
+import { fetchPostsList, updatePost } from "../../store/actions/postsActions";
+import { getAccordingPagePosts, getHtml } from "./utils";
 
 import { Alert } from "@material-ui/lab";
 import { IObject } from "../../interfaces";
+import { IPosts } from "./interfaces";
 import { Pagination } from "@material-ui/lab";
 import Post from "../../components/Post";
-import PropTypes from "prop-types";
 import Service from "../../services/service";
 import classes from "./Posts.module.scss";
+import { connect } from "react-redux";
+import { useHistory } from "react-router-dom";
 
 const classNames = require("classnames");
 
-function getHtml(isLoading: boolean = true, isError: boolean, postsHtml: any) {
-  if (isError) {
-    return <Alert color="error">При загрузке данных произошла ошибка</Alert>;
-  }
-  return postsHtml;
-}
-
-function getAccordingPagePosts(page: number, posts: IObject[]) {
-  const pagePosts: IObject = {
-    1: {
-      from: 0,
-      to: 19,
-    },
-    2: {
-      from: 20,
-      to: 39,
-    },
-    3: {
-      from: 40,
-      to: 59,
-    },
-    4: {
-      from: 60,
-      to: 79,
-    },
-    5: {
-      from: 80,
-      to: 99,
-    },
-  };
-  const pageNumber = !page || page < 1 || page > 5 ? 1 : page;
-  const { from, to } = pagePosts[pageNumber.toString()];
-  return posts.slice(from, to);
-}
-
-function Posts(props: IObject) {
+function Posts(props: IPosts) {
   const {
-    posts,
+    posts = [],
     fetchPostsList,
     isLoading,
     isError,
-    history,
     user,
     updatePost,
   } = props;
   const ininitalError: IObject = {};
   const [error, setError] = useState(ininitalError);
   const PostClassName = classNames(classes.Post);
-  const Posts = classNames("Container");
+  const PostsClassName = classNames("Container");
+  const history = useHistory();
 
   useEffect(() => {
     fetchPostsList();
@@ -135,7 +104,7 @@ function Posts(props: IObject) {
   return getHtml(
     isLoading,
     isError,
-    <div className={Posts}>
+    <div className={PostsClassName}>
       {postsHtml}
       {posts.length && (
         <Pagination color="primary" count={5} onChange={onPaginationChange} />
@@ -144,23 +113,19 @@ function Posts(props: IObject) {
   );
 }
 
-export default Posts;
+const mapStateToProps = (state: IObject) => {
+  return {
+    posts: state.posts.posts,
+    isLoading: state.posts.isLoading,
+    isError: state.posts.isError,
+    user: state.user,
+  };
+};
 
-Posts.propTypes = {
-  posts: PropTypes.object,
-  fetchPostsList: PropTypes.func,
-  isLoading: PropTypes.bool,
-  isError: PropTypes.bool,
-  history: PropTypes.object,
-  user: PropTypes.object,
-  updatePost: PropTypes.func,
-};
-Posts.defaultProps = {
-  posts: [],
-  fetchPostsList: () => [],
-  isLoading: false,
-  isError: false,
-  history: {},
-  user: {},
-  updatePost: () => [],
-};
+const mapDispatchToProps = (dispatch: Function) => ({
+  fetchPostsList: () => dispatch(fetchPostsList()),
+  updatePost: (updatedPostInfo: {}, index: number) =>
+    dispatch(updatePost(updatedPostInfo, index)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Posts);

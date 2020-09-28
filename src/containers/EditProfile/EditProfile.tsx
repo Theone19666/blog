@@ -1,17 +1,19 @@
+import { IObject, IState, IUser } from "../../interfaces";
 import React, { useState } from "react";
+import { loginUser, setUser } from "../../store/actions/userActions";
 
 import { Alert } from "@material-ui/lab";
 import FormField from "../../components/FormField";
-import { IObject } from "../../interfaces";
+import { IEditProfile } from "./interfaces";
 import Service from "../../services/service";
 import classes from "../../containers/Registration/Registration.module.scss";
+import { connect } from "react-redux";
+import { setIsLoading } from "../../store/actions/postsActions";
 import { useForm } from "react-hook-form";
-import { useHistory } from "react-router-dom";
-import PropTypes from "prop-types";
 
 const classNames = require("classnames");
 
-function EditProfile(props: IObject) {
+function EditProfile(props: IEditProfile) {
   const { setIsLoading, setUser, user, isLoading } = props;
   const { register, handleSubmit, errors, setError, clearErrors } = useForm();
   const LoginClassName = classNames("Profile-Contaier");
@@ -32,9 +34,7 @@ function EditProfile(props: IObject) {
   });
   const ErrorClassName = classNames(classes.Error);
   const ButtonClassName = classNames(classes.Button);
-  const SignInWrapperClassName = classNames(classes.SignInWrapper);
   const [success, setSuccess] = useState(false);
-  let history = useHistory();
 
   const updateUser = (body: IObject, headers: IObject) => {
     return Service.updateUser(body, headers);
@@ -47,7 +47,6 @@ function EditProfile(props: IObject) {
     };
     updateUser(userInfo, headers)
       .then((resp: any) => {
-        //console.log("resp", resp);
         const { user } = resp;
         if (resp.errors) {
           const keyError = Object.keys(resp.errors)[0];
@@ -59,7 +58,7 @@ function EditProfile(props: IObject) {
         }
         return user;
       })
-      .then((resp: IObject) => {
+      .then((resp: any) => {
         setUser(resp);
         setSuccess(true);
         setTimeout(() => {
@@ -90,7 +89,6 @@ function EditProfile(props: IObject) {
           placeholder="Username"
           titleClassNames={FieldTitleClassName}
           inputClassNames={usernameFieldClassName}
-          register={register}
           rules={{ required: true, maxLength: 20, minLength: 3 }}
           ref={register({ required: true, maxLength: 20, minLength: 3 })}
           defaultValue={user.username}
@@ -107,7 +105,6 @@ function EditProfile(props: IObject) {
           type="email"
           titleClassNames={FieldTitleClassName}
           inputClassNames={emailFieldClassName}
-          register={register}
           ref={register({ required: true, pattern: /@{1}/gi })}
           defaultValue={user.email}
         />
@@ -123,7 +120,6 @@ function EditProfile(props: IObject) {
           type="password"
           titleClassNames={FieldTitleClassName}
           inputClassNames={passwordFieldClassName}
-          register={register}
           ref={register({ required: true, maxLength: 40, minLength: 6 })}
         />
         {errors.password && (
@@ -159,20 +155,18 @@ function EditProfile(props: IObject) {
     </div>
   );
 }
-EditProfile.propTypes = {
-  setIsLoading: PropTypes.func,
-  setUser: PropTypes.func,
-  user: PropTypes.object,
-  isLoading: PropTypes.bool,
-  rootClassName: PropTypes.string
+
+const mapStateToProps = (state: IState) => {
+  return {
+    user: state.user,
+    isLoading: state.posts.isLoading,
+  };
 };
 
-EditProfile.defaultProps = {
-  rootClassName: "",
-  setIsLoading: () => {},
-  setUser: () => {},
-  user: {},
-  isLoading: false
-};
+const mapDispatchToProps = (dispatch: Function) => ({
+  loginUser: (user: IUser) => dispatch(loginUser(user)),
+  setUser: (user: IUser) => dispatch(setUser(user)),
+  setIsLoading: (isLoading: boolean) => dispatch(setIsLoading(isLoading)),
+});
 
-export default EditProfile;
+export default connect(mapStateToProps, mapDispatchToProps)(EditProfile);

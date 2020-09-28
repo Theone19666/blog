@@ -1,14 +1,12 @@
-import React from "react";
-
 import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
-import { IObject } from "../../interfaces";
-import PropTypes from "prop-types";
+import { IDeleteDialog } from "./interfaces";
+import React from "react";
 
-function DeleteDialog(props: IObject) {
+function DeleteDialog(props: IDeleteDialog) {
   const { open, close, deletePost } = props;
 
   const handleClose = () => {
@@ -41,15 +39,5 @@ function DeleteDialog(props: IObject) {
     </div>
   );
 }
-DeleteDialog.propTypes = {
-  deletePost:PropTypes.func,
-  close:PropTypes.func,
-  open: PropTypes.func,
-};
 
-DeleteDialog.defaultProps = {
-  deletePost: () => {},
-  close: () => {},
-  open: () => {},
-};
 export default DeleteDialog;

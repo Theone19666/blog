@@ -3,14 +3,14 @@ import React, { useEffect } from "react";
 import { logOutUser, loginUser } from "../../store/actions/userActions";
 
 import { CircularProgress } from "@material-ui/core";
-import CreateEditPostContainer from "../../componentContainers/CreateEditPostContainer";
-import EditProfileContainer from "../../componentContainers/EditProfileContainer";
+import CreateEditPost from "../CreateEditPost";
+import EditProfile from "../../containers/EditProfile";
 import Header from "../../components/Header";
 import { IApp } from "./interfaces";
-import LoginContainer from "../../componentContainers/LoginContainer";
-import PostPageContainer from "../../componentContainers/PostPageContainer";
-import PostsContainer from "../../componentContainers/PostsContainer";
-import RegisterContainer from "../../componentContainers/RegisterContainer";
+import Login from "../../containers/Login";
+import PostPage from "../../components/PostPage";
+import Posts from "../../containers/Posts";
+import Registration from "../../containers/Registration";
 import { Route } from "react-router-dom";
 import { connect } from "react-redux";
 import { setIsLoading } from "../../store/actions/postsActions";
@@ -32,20 +32,16 @@ function App(props: IApp) {
           <CircularProgress />{" "}
         </div>
       )}
-      <Route exact path="/" component={PostsContainer} />
-      <Route exact path="/?page=:page?" component={PostsContainer} />
-      <Route exact path="/articles" component={PostsContainer} />
-      <Route exact path="/articles?page=:page?" component={PostsContainer} />
-      <Route exact path="/articles/:slug" component={PostPageContainer} />
-      <Route path="/sign-up" component={RegisterContainer} />
-      <Route path="/sign-in" component={LoginContainer} />
-      <Route exact path="/profile" component={EditProfileContainer} />
-      <Route
-        exact
-        path="/articles/:slug/edit"
-        component={CreateEditPostContainer}
-      />
-      <Route exact path="/new-article" component={CreateEditPostContainer} />
+      <Route exact path="/" component={Posts} />
+      <Route exact path="/?page=:page?" component={Posts} />
+      <Route exact path="/articles" component={Posts} />
+      <Route exact path="/articles?page=:page?" component={Posts} />
+      <Route exact path="/articles/:slug" component={PostPage} />
+      <Route path="/sign-up" component={Registration} />
+      <Route path="/sign-in" component={Login} />
+      <Route path="/profile" component={EditProfile} />
+      <Route exact path="/articles/:slug/edit" component={CreateEditPost} />
+      <Route path="/new-article" component={CreateEditPost} />
     </div>
   );
 }

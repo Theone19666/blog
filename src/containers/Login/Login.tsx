@@ -1,26 +1,27 @@
+import { IObject, IState, IUser } from "../../interfaces";
 import React, { useState } from "react";
+import {
+  logOutUser,
+  loginUser,
+  setUser,
+} from "../../store/actions/userActions";
 
 import { Alert } from "@material-ui/lab";
 import FormField from "../../components/FormField";
-import { IObject } from "../../interfaces";
+import { ILogin } from "./interfaces";
 import { Link } from "react-router-dom";
 import Service from "../../services/service";
 import classes from "../../containers/Registration/Registration.module.scss";
+import { connect } from "react-redux";
+import { setIsLoading } from "../../store/actions/postsActions";
 import { useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
-import PropTypes from "prop-types";
 
 const classNames = require("classnames");
 
-function Login(props: IObject) {
+function Login(props: ILogin) {
   let history = useHistory();
-  const {
-    register,
-    handleSubmit,
-    errors,
-    setError,
-    clearErrors,
-  } = useForm();
+  const { register, handleSubmit, errors, setError, clearErrors } = useForm();
   const LoginClassName = classNames("Profile-Contaier");
   const TitleClassName = classNames("FormTitle");
   const FieldTitleClassName = classNames(classes.FieldTitle);
@@ -44,8 +45,7 @@ function Login(props: IObject) {
 
     setIsLoading(true);
     loginUser({ user: userInfo })
-      .then((resp: IObject) => {
-        // const { user } = resp;
+      .then((resp: any) => {
         if (resp.errors) {
           const keyError = Object.keys(resp.errors)[0];
           setError("registrationError", {
@@ -69,9 +69,6 @@ function Login(props: IObject) {
       })
       .catch((error: any) => {
         console.log(error);
-        /*setError("registrationError", {
-          message: error,
-        }); */
       })
       .finally(() => {
         setIsLoading(false);
@@ -88,7 +85,6 @@ function Login(props: IObject) {
           type="email"
           titleClassNames={FieldTitleClassName}
           inputClassNames={emailFieldClassName}
-          register={register}
           ref={register({ required: true, pattern: /@{1}/gi })}
         />
         {errors.email && (
@@ -103,7 +99,6 @@ function Login(props: IObject) {
           type="password"
           titleClassNames={FieldTitleClassName}
           inputClassNames={passwordFieldClassName}
-          register={register}
           ref={register({ required: true, maxLength: 40, minLength: 6 })}
         />
         {errors.password && (
@@ -129,13 +124,17 @@ function Login(props: IObject) {
   );
 }
 
-Login.propTypes = {
-  setIsLoading: PropTypes.func, setUser: PropTypes.func,
+const mapStateToProps = (state: IState) => {
+  return {
+    user: state.user,
+  };
 };
 
-Login.defaultProps = {
-  setUser: () => {},
-  setIsLoading: () => {}
-};
+const mapDispatchToProps = (dispatch: Function) => ({
+  loginUser: (user: IUser) => dispatch(loginUser(user)),
+  setUser: (user: IUser) => dispatch(setUser(user)),
+  logOutUser: () => dispatch(logOutUser()),
+  setIsLoading: (isLoading: boolean) => dispatch(setIsLoading(isLoading)),
+});
 
-export default Login;
+export default connect(mapStateToProps, mapDispatchToProps)(Login);

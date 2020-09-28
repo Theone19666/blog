@@ -1,8 +1,7 @@
-import { IObject } from "../../interfaces";
+import { IInput } from "./interfaces";
 import React from "react";
-import PropTypes from "prop-types";
 
-function Input(props: IObject) {
+function Input(props: IInput) {
   const { type = "text", name, classNames, placeholder } = props;
   return (
     <input
@@ -13,17 +12,5 @@ function Input(props: IObject) {
     />
   );
 }
-
-Input.propTypes = {
-  type: PropTypes.string,
-  placeholder: PropTypes.string,
-  classNames: PropTypes.string,
-};
-
-Input.defaultProps = {
-  type: "text",
-  classNames: '',
-  placeholder: '',
-};
 
 export default Input;

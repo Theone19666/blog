@@ -1,13 +1,16 @@
-import { ICreatedEditPost, IMatchParams } from "./interfaces";
+import { IMatchParams, IState } from "../../interfaces";
 import React, { useEffect, useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
 
 import { Alert } from "@material-ui/lab";
 import FormField from "../../components/FormField";
+import { ICreatedEditPost } from "./interfaces";
 import Service from "../../services/service";
 import Tags from "../../components/Tags";
 import classes from "../../containers/Registration/Registration.module.scss";
 import classesCreateEdit from "./CreateEditPost.module.scss";
+import { connect } from "react-redux";
+import { setIsLoading } from "../../store/actions/postsActions";
 import { useForm } from "react-hook-form";
 
 const classNames = require("classnames");
@@ -15,7 +18,7 @@ const classNames = require("classnames");
 function CreateEditPost(props: ICreatedEditPost) {
   const { setIsLoading, user, isLoading } = props;
   let history = useHistory();
-  const { slug }: IMatchParams = useParams();
+  const { slug } = useParams() as any;
   const [post, setPost] = useState("");
   const [pageType, setPageType] = useState("create");
   const [tags, setTags] = useState([""]);
@@ -174,7 +177,6 @@ function CreateEditPost(props: ICreatedEditPost) {
           inputType="text"
           titleClassNames={FieldTitleClassName}
           inputClassNames={titleFieldClassName}
-          register={register}
           ref={register({ required: true })}
           defaultValue={title}
         />
@@ -188,7 +190,6 @@ function CreateEditPost(props: ICreatedEditPost) {
           inputType="text"
           titleClassNames={FieldTitleClassName}
           inputClassNames={shortDescriptionFieldClassName}
-          register={register}
           ref={register({ required: true })}
           defaultValue={description}
         />
@@ -204,7 +205,6 @@ function CreateEditPost(props: ICreatedEditPost) {
           type="textarea"
           titleClassNames={FieldTitleClassName}
           inputClassNames={textFieldClassName}
-          register={register}
           ref={register({ required: true })}
           defaultValue={body}
         />
@@ -237,4 +237,15 @@ function CreateEditPost(props: ICreatedEditPost) {
   );
 }
 
-export default CreateEditPost;
+const mapStateToProps = (state: IState) => {
+  return {
+    user: state.user,
+    isLoading: state.posts.isLoading,
+  };
+};
+
+const mapDispatchToProps = (dispatch: Function) => ({
+  setIsLoading: (isLoading: boolean) => dispatch(setIsLoading(isLoading)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(CreateEditPost);

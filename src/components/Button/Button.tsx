@@ -1,9 +1,8 @@
 import ButtonMaterial from "@material-ui/core/Button";
-import { IObject } from "../../interfaces";
+import { IButton } from "./interfaces";
 import React from "react";
-import PropTypes from "prop-types";
 
-function Button(props: IObject) {
+function Button(props: IButton) {
   const {
     variant,
     size,
@@ -26,25 +25,5 @@ function Button(props: IObject) {
     </ButtonMaterial>
   );
 }
-
-Button.propTypes = {
-  variant: PropTypes.string,
-  size: PropTypes.string,
-  classNames: PropTypes.string,
-  text:PropTypes.string,
-  color:PropTypes.string,
-  rootClassName:PropTypes.string,
-  onClick: PropTypes.func,
-};
-
-Button.defaultProps = {
-  variant: "",
-  size: "large",
-  classNames: '',
-  text: '',
-  color: '',
-  rootClassName: '',
-  onClick: () => {}
-};
 
 export default Button;
