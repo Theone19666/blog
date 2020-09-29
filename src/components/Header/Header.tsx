@@ -7,6 +7,7 @@ import React from "react";
 import { checkIsImage } from "../../utils";
 import classes from "./Header.module.scss";
 import classnames from "classnames";
+import { moodStyle } from "./utils";
 
 const HeaderClass = classnames(classes.Header);
 const TitleClass = classnames(classes.Title);
@@ -47,14 +48,7 @@ function getHtml(userInfo: IUser, logOut: () => void) {
               className={LoginImg}
             />
           ) : (
-            <Mood
-              style={{
-                width: "46px",
-                height: "46",
-                marginRight: "27px",
-                color: "black",
-              }}
-            />
+            <Mood style={moodStyle} />
           )}
         </Link>
         <Button
@@ -85,7 +79,7 @@ function getHtml(userInfo: IUser, logOut: () => void) {
 function Header(props: IHeader) {
   const { user, logoutUser } = props;
   const logOut = () => {
-    if (user?.email) {
+    if (user?.token) {
       logoutUser();
     }
   };

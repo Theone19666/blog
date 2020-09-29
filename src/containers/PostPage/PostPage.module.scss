@@ -1,11 +1,11 @@
-@import "../Post/Post.module.scss";
+@import "../../components/Post/Post.module.scss";
 .Body {
   font-size: 20px;
   line-height: 28px;
   color: $postText;
   margin-top: 25px;
 }
-.Description{
+.Description {
   margin-top: 16px;
 }
 .EditingButtonsWrapepr {
@@ -27,7 +27,6 @@
 .UserButtonsInfoWrapper {
   display: flex;
   flex-direction: column;
-
 }
 .UserInfoWrapper {
   margin-bottom: 30px;

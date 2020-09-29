@@ -1,8 +1,8 @@
 import { FavoriteBorderOutlined, Mood } from "@material-ui/icons";
 
 import { Alert } from "@material-ui/lab";
-import Button from "../Button";
-import DeleteDialog from "../DeleteDialog";
+import Button from "../../components/Button";
+import DeleteDialog from "../../components/DeleteDialog";
 import { IContent } from "./interfaces";
 import { Link } from "react-router-dom";
 import React from "react";

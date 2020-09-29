@@ -1,62 +1,15 @@
-import { IObject } from "../../interfaces";
-import Service from "../../services/service";
-import { setIsLoading } from "./postsActions";
+import { IUser } from "../../interfaces";
 
-/*export const registerUser = (body: IObject) => {
-  return function (dispatch: Function) {
-    // dispatch(setIsLoading(true));
-    return Service.registerUser(body)
-      .then(
-        (json) => {
-          return json;
-        },
-        (error) => {
-          console.log("An error occurred.", error);
-          return error;
-        }
-      )
-      .catch((error) => {
-        // dispatch(setIsError(true));
-        throw new Error(error);
-      })
-      .finally(() => {
-        //  dispatch(setIsLoading(false));
-      });
-  };
-};
-
-export const loginUser = (body: IObject) => {
-  return function (dispatch: Function) {
-    //dispatch(setIsLoading(true));
-    return Service.loginUser(body)
-      .then(
-        (json) => {
-          return json;
-        },
-        (error) => {
-          console.log("An error occurred.", error);
-          return error;
-        }
-      )
-      .catch((error) => {
-        throw new Error(error);
-      })
-      .finally(() => {
-        // dispatch(setIsLoading(false));
-      });
-  };
-}; */
-
-export const setUser = (user: IObject = {}) => {
+export const setUser = (payload: IUser) => {
   return {
     type: "SET_USER",
-    user,
+    user: payload,
   };
 };
-export const loginUser = (user: IObject = {}) => {
+export const loginUser = (payload: IUser) => {
   return {
     type: "LOG_IN_USER",
-    user,
+    user: payload,
   };
 };
 export const logOutUser = () => {

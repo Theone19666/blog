@@ -7,7 +7,7 @@ const classNames = require("classnames");
 const FormField = React.forwardRef((props: IFormField, ref: any) => {
   const {
     title,
-    inputType,
+    inputType = "text",
     name,
     placeholder,
     titleClassNames,

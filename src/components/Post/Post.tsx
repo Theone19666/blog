@@ -7,6 +7,7 @@ import React from "react";
 import { checkIsImage } from "../../utils";
 import classes from "./Post.module.scss";
 import moment from "moment";
+import { moodStyle } from "./utils";
 
 const classNames = require("classnames");
 
@@ -78,7 +79,7 @@ function Post(props: IPost) {
         {checkIsImage(author?.image) ? (
           <img src={author.image} alt={author.username} className={LoginImg} />
         ) : (
-          <Mood style={{ width: "46px", height: "46" }} />
+          <Mood style={moodStyle} />
         )}
       </div>
     </div>

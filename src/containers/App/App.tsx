@@ -8,7 +8,7 @@ import EditProfile from "../../containers/EditProfile";
 import Header from "../../components/Header";
 import { IApp } from "./interfaces";
 import Login from "../../containers/Login";
-import PostPage from "../../components/PostPage";
+import PostPage from "../PostPage";
 import Posts from "../../containers/Posts";
 import Registration from "../../containers/Registration";
 import { Route } from "react-router-dom";

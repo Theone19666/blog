@@ -1,13 +1,13 @@
-import { IObject, IState, IUser } from "../../interfaces";
+import { IState, IUser } from "../../interfaces";
 import React, { useState } from "react";
 import { loginUser, setUser } from "../../store/actions/userActions";
 
 import { Alert } from "@material-ui/lab";
 import FormField from "../../components/FormField";
 import { IEditProfile } from "./interfaces";
-import Service from "../../services/service";
 import classes from "../../containers/Registration/Registration.module.scss";
 import { connect } from "react-redux";
+import { onSubmit } from "./services";
 import { setIsLoading } from "../../store/actions/postsActions";
 import { useForm } from "react-hook-form";
 
@@ -36,53 +36,25 @@ function EditProfile(props: IEditProfile) {
   const ButtonClassName = classNames(classes.Button);
   const [success, setSuccess] = useState(false);
 
-  const updateUser = (body: IObject, headers: IObject) => {
-    return Service.updateUser(body, headers);
-  };
-  const onSubmit = (data: any) => {
-    setIsLoading(true);
-    const userInfo = { user: { ...data } };
-    const headers = {
-      Authorization: `Token ${user.token}`,
-    };
-    updateUser(userInfo, headers)
-      .then((resp: any) => {
-        const { user } = resp;
-        if (resp.errors) {
-          const keyError = Object.keys(resp.errors)[0];
-          setError("updatingError", {
-            message: `${keyError} ${resp.errors[Object.keys(resp.errors)[0]]}`,
-          });
-          setTimeout(() => clearErrors(), 3000);
-          throw new Error("Произошла ошибка при изменении данных пользователя");
-        }
-        return user;
-      })
-      .then((resp: any) => {
-        setUser(resp);
-        setSuccess(true);
-        setTimeout(() => {
-          setSuccess(false);
-        }, 3000);
-      })
-      .catch((error: any) => {
-        console.log(error);
-        setError("updatingError", {
-          message: "Произошла ошибка при изменении данных пользователя",
-        });
-        setTimeout(() => clearErrors(), 3000);
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
-  };
   if (isLoading) {
     return null;
   }
   return (
     <div className={LoginClassName}>
       <h4 className={TitleClassName}>Edit Profile</h4>
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form
+        onSubmit={handleSubmit((data) =>
+          onSubmit(
+            data,
+            user.token,
+            setIsLoading,
+            setError,
+            clearErrors,
+            setUser,
+            setSuccess
+          )
+        )}
+      >
         <FormField
           title="Username"
           name="username"

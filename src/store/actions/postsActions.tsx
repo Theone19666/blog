@@ -1,10 +1,10 @@
-import { IObject } from "../../interfaces";
-import Service from "../../services/service";
+import { IPost } from "../../interfaces";
+import PostService from "../../services/postService";
 
 export const fetchPostsList = () => {
   return function (dispatch: Function) {
     dispatch(setIsLoading(true));
-    return Service.getAllPosts()
+    return PostService.getAllPosts()
       .then(
         (json) => {
           if (typeof json !== "object") {
@@ -28,22 +28,22 @@ export const fetchPostsList = () => {
   };
 };
 
-export const setPostsList = (list: IObject[] = []) => {
+export const setPostsList = (payload: IPost[] = []) => {
   return {
     type: "SET_POSTS_LIST",
-    list,
+    list: payload,
   };
 };
-export const setIsLoading = (isLoading: Boolean) => {
+export const setIsLoading = (payload: Boolean) => {
   return {
     type: "SET_IS_LOADING",
-    isLoading,
+    isLoading: payload,
   };
 };
-export const setIsError = (isError: Boolean) => {
+export const setIsError = (payload: Boolean) => {
   return {
     type: "SET_IS_ERROR",
-    isError,
+    isError: payload,
   };
 };
 export const updatePost = (updatedPostInfo: {}, index: number) => {

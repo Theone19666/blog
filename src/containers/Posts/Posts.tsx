@@ -1,15 +1,15 @@
+import { IObject, IState } from "../../interfaces";
 import React, { useEffect, useState } from "react";
 import { fetchPostsList, updatePost } from "../../store/actions/postsActions";
 import { getAccordingPagePosts, getHtml } from "./utils";
 
 import { Alert } from "@material-ui/lab";
-import { IObject } from "../../interfaces";
 import { IPosts } from "./interfaces";
 import { Pagination } from "@material-ui/lab";
 import Post from "../../components/Post";
-import Service from "../../services/service";
 import classes from "./Posts.module.scss";
 import { connect } from "react-redux";
+import { favoritePost } from "./services";
 import { useHistory } from "react-router-dom";
 
 const classNames = require("classnames");
@@ -34,36 +34,6 @@ function Posts(props: IPosts) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const favoritePost = (slug: string, favorited: boolean, index: number) => {
-    if (!user?.token) {
-      history.push({
-        pathname: "/sign-in",
-      });
-      return;
-    }
-    const headers = {
-      Authorization: `Token ${user.token}`,
-    };
-    let action: any;
-    if (favorited) {
-      action = Service.unfavoritePost(slug, headers);
-    } else {
-      action = Service.favoritePost(slug, headers);
-    }
-    action.then((resp: any) => {
-      if (resp?.errors) {
-        const keyError = Object.keys(resp.errors)[0];
-        const errorMessage = `${keyError} ${
-          resp.errors[Object.keys(resp.errors)[0]]
-        }`;
-        setError({ message: errorMessage, slug });
-        setTimeout(() => setError({}), 5000);
-        return;
-      }
-      updatePost(resp.article, index);
-    });
-  };
-
   const postsHtml = Array.isArray(posts) ? (
     getAccordingPagePosts(
       history.location.search.replace(/\D/gi, ""),
@@ -85,7 +55,15 @@ function Posts(props: IPosts) {
           slug={item.slug}
           error={error && error?.slug === item.slug ? error.message : null}
           onFavoriteIconClick={() =>
-            favoritePost(item.slug, item.favorited, key)
+            favoritePost(
+              item.slug,
+              item.favorited,
+              key,
+              user.token,
+              history,
+              setError,
+              updatePost
+            )
           }
         />
       );
@@ -113,7 +91,7 @@ function Posts(props: IPosts) {
   );
 }
 
-const mapStateToProps = (state: IObject) => {
+const mapStateToProps = (state: IState) => {
   return {
     posts: state.posts.posts,
     isLoading: state.posts.isLoading,

@@ -1,3 +1,4 @@
+import { IObject, IUser } from "../../interfaces";
 import React, { useState } from "react";
 import {
   logOutUser,
@@ -8,12 +9,11 @@ import {
 import { Alert } from "@material-ui/lab";
 import Checkbox from "../../components/Checkbox";
 import FormField from "../../components/FormField";
-import { IObject } from "../../interfaces";
 import { IRegistration } from "./interfaces";
 import { Link } from "react-router-dom";
-import Service from "../../services/service";
 import classes from "./Registration.module.scss";
 import { connect } from "react-redux";
+import { onSubmit } from "./services";
 import { setIsLoading } from "../../store/actions/postsActions";
 import { useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
@@ -60,45 +60,21 @@ function Registration(props: IRegistration) {
     }
   };
 
-  const registerUser = (userInfo: IObject) => {
-    return Service.registerUser(userInfo);
-  };
-
-  const onSubmit = (data: any) => {
-    const userInfo = { ...data };
-    delete userInfo.repeatPassword;
-    delete userInfo.agreement;
-    setIsLoading(true);
-    registerUser({ user: userInfo })
-      .then((resp: any) => {
-        if (resp?.errors) {
-          const keyError = Object.keys(resp.errors)[0];
-          setError("registrationError", {
-            message: `${keyError} ${resp.errors[Object.keys(resp.errors)[0]]}`,
-          });
-          setTimeout(() => clearErrors(), 3000);
-          throw new Error("Произошла ошибка при регистрации");
-        }
-      })
-      .then((resp: any) => {
-        setSuccess(true);
-        setTimeout(() => {
-          history.push({
-            pathname: "/sign-in",
-          });
-        }, 3000);
-      })
-      .catch((error: any) => {
-        console.log(error);
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
-  };
   return (
     <div className={RegitstrationClassName}>
       <h4 className={TitleClassName}>Create new account</h4>
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form
+        onSubmit={handleSubmit((data) =>
+          onSubmit(
+            data,
+            setIsLoading,
+            setError,
+            clearErrors,
+            setSuccess,
+            history
+          )
+        )}
+      >
         <FormField
           title="Username"
           name="username"
@@ -117,7 +93,7 @@ function Registration(props: IRegistration) {
           title="Email address"
           name="email"
           placeholder="Email address"
-          type="email"
+          inputType="email"
           titleClassNames={FieldTitleClassName}
           inputClassNames={emailFieldClassName}
           ref={register({ required: true, pattern: /@{1}/gi })}
@@ -131,7 +107,7 @@ function Registration(props: IRegistration) {
           title="Password"
           name="password"
           placeholder="Password"
-          type="password"
+          inputType="password"
           titleClassNames={FieldTitleClassName}
           inputClassNames={passwordFieldClassName}
           ref={register({ required: true, maxLength: 40, minLength: 6 })}
@@ -145,7 +121,7 @@ function Registration(props: IRegistration) {
           title="Repeat Password"
           name="repeatPassword"
           placeholder="Password"
-          type="password"
+          inputType="password"
           titleClassNames={FieldTitleClassName}
           inputClassNames={repeatPasswordFieldClassName}
           ref={register({ required: true })}
@@ -200,8 +176,8 @@ const mapStateToProps = (state: IObject) => {
 };
 
 const mapDispatchToProps = (dispatch: Function) => ({
-  loginUser: (user: IObject) => dispatch(loginUser(user)),
-  setUser: (user: IObject) => dispatch(setUser(user)),
+  loginUser: (user: IUser) => dispatch(loginUser(user)),
+  setUser: (user: IUser) => dispatch(setUser(user)),
   logOutUser: () => dispatch(logOutUser()),
   setIsLoading: (isLoading: boolean) => dispatch(setIsLoading(isLoading)),
 });

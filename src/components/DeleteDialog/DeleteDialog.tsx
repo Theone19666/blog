@@ -9,15 +9,11 @@ import React from "react";
 function DeleteDialog(props: IDeleteDialog) {
   const { open, close, deletePost } = props;
 
-  const handleClose = () => {
-    close();
-  };
-
   return (
     <div>
       <Dialog
         open={open}
-        onClose={handleClose}
+        onClose={close}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
@@ -31,7 +27,7 @@ function DeleteDialog(props: IDeleteDialog) {
           <Button onClick={deletePost} color="primary">
             Да
           </Button>
-          <Button onClick={handleClose} color="primary">
+          <Button onClick={close} color="primary">
             Отменить
           </Button>
         </DialogActions>

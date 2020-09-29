@@ -1,11 +1,11 @@
-import { IMatchParams, IState } from "../../interfaces";
 import React, { useEffect, useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
 
 import { Alert } from "@material-ui/lab";
 import FormField from "../../components/FormField";
 import { ICreatedEditPost } from "./interfaces";
-import Service from "../../services/service";
+import { IState } from "../../interfaces";
+import PostService from "../../services/postService";
 import Tags from "../../components/Tags";
 import classes from "../../containers/Registration/Registration.module.scss";
 import classesCreateEdit from "./CreateEditPost.module.scss";
@@ -54,8 +54,8 @@ function CreateEditPost(props: ICreatedEditPost) {
     if (!slug) return;
     setPageType("edit");
     setIsLoading(true);
-    Service.getPost(slug)
-      .then((resp) => {
+    PostService.getPost(slug)
+      .then((resp: any) => {
         if (resp.errors || resp.error) {
           const error = resp.errors || resp.error;
           const keyError = Array.isArray(error)
@@ -127,8 +127,8 @@ function CreateEditPost(props: ICreatedEditPost) {
     };
     const requestMethod =
       pageType === "create"
-        ? Service.addNewPost(body, headers)
-        : Service.updatePost(body, headers, slug);
+        ? PostService.addNewPost(body, headers)
+        : PostService.updatePost(body, headers, slug);
     requestMethod
       ?.then((resp: any) => {
         if (resp.errors) {
